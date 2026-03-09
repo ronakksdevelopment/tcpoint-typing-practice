@@ -160,7 +160,7 @@
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;}
         .panel-title { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
-        /* Practice Area */
+        /* Stats Bar */
         .stats-bar {
             display: flex;
             justify-content: space-between;
@@ -175,47 +175,78 @@
         .stat-box { display: flex; flex-direction: column; align-items: center; }
         .stat-label { font-size: 0.75rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
         .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: var(--accent); }
-        .stat-value.wpm-high { color: var(--correct); }
 
-        .typing-container {
-            position: relative;
+        /* New Two-Box Typing Interface */
+        .target-box {
             background-color: var(--bg-sec);
             border-radius: 8px;
-            padding: 2rem;
-            min-height: 200px;
-            cursor: text;
-            border: 2px solid transparent;
-            transition: border-color 0.3s;
-        }
-
-        .typing-container.focused { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        
-        #hidden-input { opacity: 0; position: absolute; z-index: -1; }
-
-        .text-display {
+            padding: 1.5rem;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            line-height: 1.6;
+            font-size: 1.4rem;
+            line-height: 1.8;
             color: var(--text-sec);
             user-select: none;
-            white-space: pre-wrap;
-            word-break: break-word;
+            word-wrap: break-word;
+            max-height: 160px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.2);
         }
 
-        .text-display span { transition: color 0.1s; position: relative; }
-        .text-display span.correct { color: var(--text-main); }
-        .text-display span.incorrect { color: var(--incorrect); background-color: rgba(239, 68, 68, 0.2); border-radius: 2px; }
-        .text-display span.active { color: var(--text-main); }
-        
-        .text-display span.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 2px;
+        .target-box span {
+            padding: 2px 4px;
+            margin: 0 1px;
+            border-radius: 4px;
+            transition: all 0.15s;
+            display: inline-block;
+        }
+
+        .target-box span.active {
+            color: var(--text-main);
+            background-color: rgba(59, 130, 246, 0.25);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .target-box span.correct {
+            color: var(--correct);
+        }
+
+        .target-box span.incorrect {
+            color: var(--incorrect);
+            text-decoration: line-through;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .target-box span.error-highlight {
+            color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.2);
+            border-bottom: 3px solid var(--incorrect);
+        }
+
+        .user-input-box {
             width: 100%;
-            height: 3px;
-            background-color: var(--accent);
-            animation: blink 1s infinite;
+            padding: 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            background-color: var(--bg-sec);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .user-input-box:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .user-input-box.input-error {
+            border-color: var(--incorrect);
+            background-color: rgba(239, 68, 68, 0.05);
+            color: var(--incorrect);
         }
 
         .progress-container {
@@ -223,7 +254,7 @@
             height: 6px;
             background-color: var(--bg-sec);
             border-radius: 3px;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             overflow: hidden;
         }
 
@@ -382,7 +413,7 @@
         <!-- Hero -->
         <section class="hero">
             <h1>Professional Typing Mastery</h1>
-            <p>Official Training Portal. Strict rules enabled: Backspace is disabled to build true accuracy. Auto-generating paragraphs from the official 100-step Mastery Guide.</p>
+            <p>Official Training Portal. Word-by-Word lock enabled: You can backspace within a word, but pressing space submits it. Focus on accuracy over speed.</p>
         </section>
 
         <!-- Profiles Panel -->
@@ -444,7 +475,7 @@
             <div class="panel-header">
                 <div class="panel-title">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="6.5"></line></svg>
-                    Live Typing Area <span style="font-size: 0.8rem; color: var(--incorrect); font-weight: normal; margin-left: 10px;">[ NO BACKSPACE ]</span>
+                    Live Typing Area
                 </div>
                 <div class="flex">
                     <button class="btn btn-outline" onclick="loadText()">Generate New Text</button>
@@ -471,14 +502,13 @@
                 </div>
             </div>
 
-            <!-- Hidden input to capture mobile keyboard events properly -->
-            <input type="text" id="practice-text-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            
-            <div class="typing-container" id="typing-container" onclick="document.getElementById('practice-text-input').focus()">
-                <div class="text-display" id="text-display">
-                    <!-- Text spans injected via JS -->
-                </div>
+            <!-- Box 1: Target Text -->
+            <div class="target-box" id="target-display" onclick="document.getElementById('practice-text-input').focus()">
+                <!-- Words injected via JS -->
             </div>
+            
+            <!-- Box 2: User Input -->
+            <input type="text" class="user-input-box" id="practice-text-input" placeholder="Type the highlighted word and press Space..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
             
             <div class="progress-container">
                 <div class="progress-bar" id="progress-bar"></div>
@@ -616,7 +646,7 @@
     <!-- Footer -->
     <footer>
         <p><strong>The Computer Point</strong> | Professional Typing Mastery Portal</p>
-        <p>100 Steps Training Guide System • Build Version 2.0.0</p>
+        <p>100 Steps Training Guide System • Build Version 3.0.0 (Word-by-Word Edit Mode)</p>
         <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">Profiles stored locally. Use Export/Import to transfer data.</p>
     </footer>
 
@@ -638,7 +668,6 @@
             if (stored) {
                 appData = JSON.parse(stored);
             } else {
-                // Migration from older version if exists
                 const oldHistory = JSON.parse(localStorage.getItem('tcp_typing_history') || '[]');
                 if (oldHistory.length > 0) {
                     appData.history["Default Student"] = oldHistory;
@@ -726,7 +755,7 @@
             reader.readAsText(file);
         }
 
-        // --- CONTENT LIBRARY (Extracted from Mastery Guide) ---
+        // --- CONTENT LIBRARY ---
         const sentenceLibrary = {
             easy: [
                 "the quick brown fox jumps.",
@@ -763,23 +792,25 @@
             ]
         };
 
-        let currentText = "";
-        
         // --- STATE VARIABLES ---
+        let wordsArray = [];
+        let currentWordIndex = 0;
+        
         let timer = 0;
         let timeRemaining = 60;
         let maxTime = 60;
         let timerInterval = null;
         let isTyping = false;
         
-        let charIndex = 0;
+        // Stats tracking
+        let correctCharsCount = 0;
+        let totalAttemptedWords = 0;
+        let correctWordsCount = 0;
         let errors = 0;
-        let totalTyped = 0;
         
         // --- DOM ELEMENTS ---
         const inputField = document.getElementById('practice-text-input');
-        const textDisplay = document.getElementById('text-display');
-        const typingContainer = document.getElementById('typing-container');
+        const targetDisplay = document.getElementById('target-display');
         const modeSelect = document.getElementById('mode-select');
         const timeSelect = document.getElementById('time-select');
         const progressBar = document.getElementById('progress-bar');
@@ -798,111 +829,117 @@
 
         function setupEventListeners() {
             // Focus mechanics
-            typingContainer.addEventListener('click', () => {
-                inputField.focus();
-                typingContainer.classList.add('focused');
-            });
-            inputField.addEventListener('blur', () => {
-                typingContainer.classList.remove('focused');
-            });
-
-            // Input handling
             inputField.addEventListener('input', handleInput);
             
-            // STRICT BLOCK BACKSPACE VIA KEYDOWN
-            document.addEventListener('keydown', (e) => {
-                if (e.code === 'Backspace' || e.key === 'Backspace') {
-                    e.preventDefault(); // Stop backspace action globally
-                    showToast("Backspace is disabled! Keep moving forward.", true);
-                } else {
-                    handleKeyDownVisuals(e); // Glow keys
-                }
-            });
+            // Standard Keyboard Glow Effects
+            document.addEventListener('keydown', handleKeyDownVisuals);
             document.addEventListener('keyup', handleKeyUpVisuals);
+            
+            // Allow focus clicking on target box to redirect to input box
+            targetDisplay.addEventListener('click', () => {
+                inputField.focus();
+            });
         }
 
         // --- TYPING LOGIC ---
         function loadText() {
             const mode = modeSelect.value;
+            let fullText = "";
             
             if (mode === 'exam') {
-                currentText = sentenceLibrary.exam[0];
+                fullText = sentenceLibrary.exam[0];
                 timeSelect.value = "60";
                 timeSelect.disabled = true; // Lock timer
             } else {
                 timeSelect.disabled = false;
-                // Auto generate random paragraph by combining 3-4 sentences
                 const pool = sentenceLibrary[mode];
                 let selected = [];
                 const sentenceCount = Math.floor(Math.random() * 2) + 3; // 3 or 4 sentences
                 for(let i=0; i<sentenceCount; i++) {
                     selected.push(pool[Math.floor(Math.random() * pool.length)]);
                 }
-                currentText = selected.join(" ");
+                fullText = selected.join(" ");
             }
             
-            renderText();
+            // Convert to array of words, removing double spaces just in case
+            wordsArray = fullText.trim().split(/\s+/);
+            
+            renderWords();
             resetTest();
         }
 
-        function renderText() {
-            textDisplay.innerHTML = "";
-            currentText.split("").forEach((char) => {
+        function renderWords() {
+            targetDisplay.innerHTML = "";
+            wordsArray.forEach((word, index) => {
                 const span = document.createElement("span");
-                span.innerText = char;
-                textDisplay.appendChild(span);
+                span.innerText = word + " ";
+                span.id = "word-" + index;
+                if(index === 0) span.classList.add("active");
+                targetDisplay.appendChild(span);
             });
-            if(textDisplay.childNodes.length > 0) {
-                textDisplay.childNodes[0].classList.add("active");
-            }
         }
 
         function handleInput(e) {
             if (!isTyping) startTimer();
 
-            // Intercept mobile backspace/deletions if they bypass keydown
-            if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteWordBackward') {
-                inputField.value = " "; // Maintain dummy space
-                showToast("Backspace is disabled!", true);
-                return;
-            }
+            const val = inputField.value;
+            const targetWord = wordsArray[currentWordIndex];
+            const wordSpan = document.getElementById('word-' + currentWordIndex);
 
-            const typedVal = inputField.value;
-            const typedChar = typedVal[typedVal.length - 1]; 
-            
-            if (typedChar) {
-                processKeystroke(typedChar);
-            }
-            
-            // Clear input field to prevent massive string accumulation, but leave 1 space for mobile keyboard stability
-            inputField.value = " ";
-        }
+            if (!targetWord || !wordSpan) return;
 
-        function processKeystroke(char) {
-            const spans = textDisplay.childNodes;
-            if (charIndex >= currentText.length) return;
-
-            const targetChar = currentText[charIndex];
-            
-            if (char === targetChar) {
-                spans[charIndex].classList.add('correct');
+            // Spacebar detection (Word submission)
+            if (val.endsWith(' ') || (e.data === ' ' && val.includes(' '))) {
+                const typedWord = val.trim();
+                
+                // Submit and Lock the word
+                if (typedWord === targetWord) {
+                    wordSpan.className = 'correct';
+                    correctCharsCount += targetWord.length + 1; // Count word length + space
+                    correctWordsCount++;
+                } else {
+                    wordSpan.className = 'incorrect';
+                    errors++;
+                    statErrors.innerText = errors;
+                }
+                
+                totalAttemptedWords++;
+                currentWordIndex++;
+                inputField.value = ''; // Clear for next word
+                inputField.classList.remove('input-error');
+                
+                // Move Active highlight to next word
+                if (currentWordIndex < wordsArray.length) {
+                    const nextSpan = document.getElementById('word-' + currentWordIndex);
+                    nextSpan.className = 'active';
+                    
+                    // Auto-scroll logic if word is out of view
+                    nextSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    finishTest();
+                }
             } else {
-                spans[charIndex].classList.add('incorrect');
-                errors++;
-                statErrors.innerText = errors;
+                // Real-time highlighting BEFORE pressing space
+                if (targetWord.startsWith(val)) {
+                    wordSpan.classList.remove('error-highlight');
+                    inputField.classList.remove('input-error');
+                } else {
+                    wordSpan.classList.add('error-highlight');
+                    inputField.classList.add('input-error');
+                }
+                
+                // Auto-Finish edge case: the very last word without hitting space
+                if (currentWordIndex === wordsArray.length - 1 && val === targetWord) {
+                     wordSpan.className = 'correct';
+                     correctCharsCount += targetWord.length; // No space after last word
+                     correctWordsCount++;
+                     totalAttemptedWords++;
+                     currentWordIndex++;
+                     finishTest();
+                }
             }
             
-            // Always move forward - No fixing mistakes!
-            spans[charIndex].classList.remove('active');
-            charIndex++;
-            totalTyped++;
-            
-            if (charIndex < currentText.length) {
-                spans[charIndex].classList.add('active');
-            }
-
             updateStats();
-            checkCompletion();
         }
 
         // --- TIMERS & STATS ---
@@ -928,31 +965,39 @@
         function updateStats() {
             const timeInMins = timer / 60;
             let wpm = 0;
+            
+            // Standard WPM = (Total correct characters / 5) / Time
             if (timeInMins > 0) {
-                const correctChars = totalTyped - errors;
-                wpm = Math.max(0, Math.round((correctChars / 5) / timeInMins));
+                wpm = Math.max(0, Math.round((correctCharsCount / 5) / timeInMins));
             }
             
+            // Accuracy based on words completed
             let accuracy = 100;
-            if (totalTyped > 0) {
-                accuracy = Math.round(((totalTyped - errors) / totalTyped) * 100);
+            if (totalAttemptedWords > 0) {
+                accuracy = Math.round((correctWordsCount / totalAttemptedWords) * 100);
             }
 
             statWPM.innerText = wpm;
             statAcc.innerText = accuracy + "%";
             
-            const progress = (charIndex / currentText.length) * 100;
+            // Progress Bar
+            const progress = (currentWordIndex / wordsArray.length) * 100;
             progressBar.style.width = progress + "%";
         }
 
         function resetTest() {
             clearInterval(timerInterval);
             timer = 0;
-            charIndex = 0;
+            currentWordIndex = 0;
+            correctCharsCount = 0;
+            totalAttemptedWords = 0;
+            correctWordsCount = 0;
             errors = 0;
-            totalTyped = 0;
             isTyping = false;
-            inputField.value = " "; // Dummy space
+            
+            inputField.value = '';
+            inputField.disabled = false;
+            inputField.classList.remove('input-error');
             
             maxTime = parseInt(timeSelect.value);
             timeRemaining = maxTime;
@@ -962,19 +1007,20 @@
             statAcc.innerText = "100%";
             statErrors.innerText = "0";
             progressBar.style.width = "0%";
+            targetDisplay.scrollTop = 0;
             
-            // Remove all classes
-            textDisplay.childNodes.forEach(span => {
+            // Reset text spans
+            Array.from(targetDisplay.children).forEach((span, index) => {
                 span.className = '';
+                if(index === 0) span.classList.add('active');
             });
-            if(textDisplay.childNodes.length > 0) {
-                textDisplay.childNodes[0].classList.add('active');
-            }
+            
+            inputField.focus();
         }
 
         function finishTest() {
             clearInterval(timerInterval);
-            inputField.blur();
+            inputField.disabled = true;
             
             const finalWPM = parseInt(statWPM.innerText);
             const finalAcc = parseInt(statAcc.innerText);
@@ -982,12 +1028,6 @@
             
             saveSession(finalWPM, finalAcc, mode, errors);
             showToast(`Test Complete! WPM: ${finalWPM} | Accuracy: ${finalAcc}%`);
-        }
-
-        function checkCompletion() {
-            if (charIndex >= currentText.length) {
-                finishTest();
-            }
         }
 
         function formatTime(seconds) {
@@ -1028,7 +1068,7 @@
             };
             
             history.unshift(newRecord); 
-            if(history.length > 30) history.pop(); // Keep last 30 per profile
+            if(history.length > 30) history.pop(); 
             
             saveData();
             loadDashboard();
