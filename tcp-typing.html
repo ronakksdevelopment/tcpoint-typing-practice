@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Computer Point | Official Typing Practice Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-sec: #020617;
+            --bg-panel: #1e293b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            --text-main: #ffffff;
+            --text-sec: #94a3b8;
+            --correct: #22c55e;
+            --incorrect: #ef4444;
+            --key-bg-top: #334155;
+            --key-bg-bottom: #1e293b;
+            --key-border: #475569;
+            --key-depth: #0f172a;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        /* Navigation */
+        nav {
+            background-color: var(--bg-sec);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        /* Customizable Logo Image */
+        .custom-logo {
+            height: 35px;
+            width: auto;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        .logo span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero p { color: var(--text-sec); font-size: 1.1rem; max-width: 700px; margin: 0 auto 2rem; }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-sec);
+        }
+
+        .btn-outline:hover { background-color: var(--bg-panel); color: var(--text-main); border-color: var(--text-sec); }
+        .btn-small { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+        /* Panels */
+        .panel {
+            background-color: var(--bg-panel);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;}
+        .panel-title { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        /* Practice Area */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--bg-sec);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-box { display: flex; flex-direction: column; align-items: center; }
+        .stat-label { font-size: 0.75rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+        .stat-value.wpm-high { color: var(--correct); }
+
+        .typing-container {
+            position: relative;
+            background-color: var(--bg-sec);
+            border-radius: 8px;
+            padding: 2rem;
+            min-height: 200px;
+            cursor: text;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .typing-container.focused { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        
+        #hidden-input { opacity: 0; position: absolute; z-index: -1; }
+
+        .text-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-sec);
+            user-select: none;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .text-display span { transition: color 0.1s; position: relative; }
+        .text-display span.correct { color: var(--text-main); }
+        .text-display span.incorrect { color: var(--incorrect); background-color: rgba(239, 68, 68, 0.2); border-radius: 2px; }
+        .text-display span.active { color: var(--text-main); }
+        
+        .text-display span.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 2px;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent);
+            animation: blink 1s infinite;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--bg-sec);
+            border-radius: 3px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        /* Professional Mechanical Keyboard */
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background-color: var(--bg-sec);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            overflow-x: auto;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .keyboard-row { display: flex; justify-content: center; gap: 6px; }
+
+        .key {
+            background: linear-gradient(180deg, var(--key-bg-top) 0%, var(--key-bg-bottom) 100%);
+            border: 1px solid var(--key-border);
+            border-bottom: 4px solid var(--key-depth);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            height: 48px;
+            padding: 0 5px;
+            position: relative;
+            transition: transform 0.05s, border-bottom 0.05s, background 0.1s;
+            user-select: none;
+        }
+
+        /* Tactile Bumps on F and J */
+        .key[data-code="KeyF"]::after, .key[data-code="KeyJ"]::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            width: 14px;
+            height: 2px;
+            background-color: var(--text-sec);
+            border-radius: 2px;
+        }
+
+        .key.pressed {
+            transform: translateY(3px);
+            border-bottom: 1px solid var(--key-depth);
+            background: var(--primary);
+            color: white;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 0 12px var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        /* Special Keys */
+        .key.backspace { min-width: 85px; font-size: 0.75rem;}
+        .key.tab { min-width: 65px; font-size: 0.75rem;}
+        .key.caps { min-width: 80px; font-size: 0.75rem;}
+        .key.enter { min-width: 95px; font-size: 0.75rem;}
+        .key.shift-l { min-width: 105px; font-size: 0.75rem;}
+        .key.shift-r { min-width: 105px; font-size: 0.75rem;}
+        .key.space { min-width: 320px; }
+        .key.ctrl, .key.win, .key.alt { min-width: 55px; font-size: 0.75rem;}
+
+        /* Controls */
+        .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { font-size: 0.85rem; color: var(--text-sec); font-weight: 500;}
+        
+        select, input[type="text"] {
+            background-color: var(--bg-sec);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
+        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 5px var(--accent-glow);}
+
+        /* Profile & Dashboard */
+        .profile-container { display: flex; align-items: center; gap: 10px; background-color: var(--bg-sec); padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color);}
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .dash-card { background-color: var(--bg-sec); padding: 1.5rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
+        .dash-card h3 { font-size: 0.9rem; color: var(--text-sec); margin-bottom: 5px; font-weight: 500;}
+        .dash-card .value { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { color: var(--text-sec); font-weight: 500; font-size: 0.9rem; }
+        tr:hover { background-color: rgba(255, 255, 255, 0.02); }
+
+        /* Footer */
+        footer { background-color: var(--bg-sec); padding: 2rem; text-align: center; border-top: 1px solid var(--border-color); margin-top: auto; }
+        footer p { color: var(--text-sec); font-size: 0.9rem; margin-bottom: 5px; }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .flex { display: flex; gap: 10px; align-items: center;}
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+            font-weight: 600;
+        }
+        .toast.error-toast { background-color: var(--incorrect); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <!-- Replace src with your custom logo link or local file -->
+            <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CP" alt="Logo" class="custom-logo" id="brand-logo" onerror="this.style.display='none'">
+            <div>THE COMPUTER <span>POINT</span></div>
+        </div>
+        <div class="nav-links">
+            <a href="#home" class="active">Home</a>
+            <a href="#practice">Practice Area</a>
+            <a href="#profiles">My Profiles</a>
+            <a href="#dashboard">Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container fade-in" id="home">
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Professional Typing Mastery</h1>
+            <p>Official Training Portal. Strict rules enabled: Backspace is disabled to build true accuracy. Auto-generating paragraphs from the official 100-step Mastery Guide.</p>
+        </section>
+
+        <!-- Profiles Panel -->
+        <section class="panel" id="profiles">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Student Profiles & Data Save
+                </div>
+                <div class="flex">
+                    <button class="btn btn-outline btn-small" onclick="exportData()">Export Save (.json)</button>
+                    <button class="btn btn-outline btn-small" onclick="document.getElementById('import-file').click()">Import Save</button>
+                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
+                </div>
+            </div>
+            
+            <div class="profile-container">
+                <label style="color: var(--text-sec); margin-right: 10px; font-weight: 500;">Active Profile:</label>
+                <select id="profile-select" onchange="switchProfile()" style="min-width: 250px; border-color: var(--accent); color: var(--accent); font-weight: 600;">
+                    <!-- Populated via JS -->
+                </select>
+                <button class="btn" onclick="createNewProfile()">+ New Profile</button>
+            </div>
+        </section>
+
+        <!-- Configuration Panel -->
+        <section class="panel" id="settings">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Practice Modes
+                </div>
+            </div>
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label>Difficulty Mode</label>
+                    <select id="mode-select" onchange="loadText()">
+                        <option value="easy">Easy (Fundamentals)</option>
+                        <option value="medium" selected>Medium (Auto-Generated Mastery Rules)</option>
+                        <option value="hard">Hard (Punctuation & Numbers)</option>
+                        <option value="exam">Official Exam Mode (Strict 1 Min)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Time Limit</label>
+                    <select id="time-select" onchange="resetTest()">
+                        <option value="0">No Limit (Practice)</option>
+                        <option value="30">30 Seconds</option>
+                        <option value="60" selected>1 Minute Test</option>
+                        <option value="120">2 Minute Test</option>
+                        <option value="300">5 Minute Endurance</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Practice Area -->
+        <section id="practice" class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="6.5"></line></svg>
+                    Live Typing Area <span style="font-size: 0.8rem; color: var(--incorrect); font-weight: normal; margin-left: 10px;">[ NO BACKSPACE ]</span>
+                </div>
+                <div class="flex">
+                    <button class="btn btn-outline" onclick="loadText()">Generate New Text</button>
+                    <button class="btn" onclick="resetTest()">Restart</button>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-box">
+                    <span class="stat-label">Timer</span>
+                    <span class="stat-value" id="stat-time">00:00</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">WPM</span>
+                    <span class="stat-value" id="stat-wpm">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-value" id="stat-acc">100%</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Errors</span>
+                    <span class="stat-value" style="color: var(--incorrect);" id="stat-errors">0</span>
+                </div>
+            </div>
+
+            <!-- Hidden input to capture mobile keyboard events properly -->
+            <input type="text" id="practice-text-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            
+            <div class="typing-container" id="typing-container" onclick="document.getElementById('practice-text-input').focus()">
+                <div class="text-display" id="text-display">
+                    <!-- Text spans injected via JS -->
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <!-- Professional Virtual Keyboard -->
+            <div class="keyboard" id="keyboard">
+                <!-- Row 1 -->
+                <div class="keyboard-row">
+                    <div class="key" data-code="Backquote">~<br>`</div>
+                    <div class="key" data-code="Digit1">!<br>1</div>
+                    <div class="key" data-code="Digit2">@<br>2</div>
+                    <div class="key" data-code="Digit3">#<br>3</div>
+                    <div class="key" data-code="Digit4">$<br>4</div>
+                    <div class="key" data-code="Digit5">%<br>5</div>
+                    <div class="key" data-code="Digit6">^<br>6</div>
+                    <div class="key" data-code="Digit7">&<br>7</div>
+                    <div class="key" data-code="Digit8">*<br>8</div>
+                    <div class="key" data-code="Digit9">(<br>9</div>
+                    <div class="key" data-code="Digit0">)<br>0</div>
+                    <div class="key" data-code="Minus">_<br>-</div>
+                    <div class="key" data-code="Equal">+<br>=</div>
+                    <div class="key backspace" data-code="Backspace">Backspace</div>
+                </div>
+                <!-- Row 2 -->
+                <div class="keyboard-row">
+                    <div class="key tab" data-code="Tab">Tab</div>
+                    <div class="key" data-code="KeyQ">Q</div>
+                    <div class="key" data-code="KeyW">W</div>
+                    <div class="key" data-code="KeyE">E</div>
+                    <div class="key" data-code="KeyR">R</div>
+                    <div class="key" data-code="KeyT">T</div>
+                    <div class="key" data-code="KeyY">Y</div>
+                    <div class="key" data-code="KeyU">U</div>
+                    <div class="key" data-code="KeyI">I</div>
+                    <div class="key" data-code="KeyO">O</div>
+                    <div class="key" data-code="KeyP">P</div>
+                    <div class="key" data-code="BracketLeft">{<br>[</div>
+                    <div class="key" data-code="BracketRight">}<br>]</div>
+                    <div class="key" data-code="Backslash">|<br>\</div>
+                </div>
+                <!-- Row 3 -->
+                <div class="keyboard-row">
+                    <div class="key caps" data-code="CapsLock">Caps</div>
+                    <div class="key" data-code="KeyA">A</div>
+                    <div class="key" data-code="KeyS">S</div>
+                    <div class="key" data-code="KeyD">D</div>
+                    <div class="key" data-code="KeyF">F</div>
+                    <div class="key" data-code="KeyG">G</div>
+                    <div class="key" data-code="KeyH">H</div>
+                    <div class="key" data-code="KeyJ">J</div>
+                    <div class="key" data-code="KeyK">K</div>
+                    <div class="key" data-code="KeyL">L</div>
+                    <div class="key" data-code="Semicolon">:<br>;</div>
+                    <div class="key" data-code="Quote">"<br>'</div>
+                    <div class="key enter" data-code="Enter">Enter</div>
+                </div>
+                <!-- Row 4 -->
+                <div class="keyboard-row">
+                    <div class="key shift-l" data-code="ShiftLeft">Shift</div>
+                    <div class="key" data-code="KeyZ">Z</div>
+                    <div class="key" data-code="KeyX">X</div>
+                    <div class="key" data-code="KeyC">C</div>
+                    <div class="key" data-code="KeyV">V</div>
+                    <div class="key" data-code="KeyB">B</div>
+                    <div class="key" data-code="KeyN">N</div>
+                    <div class="key" data-code="KeyM">M</div>
+                    <div class="key" data-code="Comma"><br>,</div>
+                    <div class="key" data-code="Period">><br>.</div>
+                    <div class="key" data-code="Slash">?<br>/</div>
+                    <div class="key shift-r" data-code="ShiftRight">Shift</div>
+                </div>
+                <!-- Row 5 -->
+                <div class="keyboard-row">
+                    <div class="key ctrl" data-code="ControlLeft">Ctrl</div>
+                    <div class="key win" data-code="MetaLeft">Win</div>
+                    <div class="key alt" data-code="AltLeft">Alt</div>
+                    <div class="key space" data-code="Space">Space</div>
+                    <div class="key alt" data-code="AltRight">Alt</div>
+                    <div class="key win" data-code="ContextMenu">Menu</div>
+                    <div class="key ctrl" data-code="ControlRight">Ctrl</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Dashboard -->
+        <section id="dashboard" class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>
+                    Profile Performance Dashboard
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <h3>Best WPM</h3>
+                    <div class="value" id="dash-best-wpm">0</div>
+                </div>
+                <div class="dash-card">
+                    <h3>Average WPM</h3>
+                    <div class="value" id="dash-avg-wpm">0</div>
+                </div>
+                <div class="dash-card">
+                    <h3>Best Accuracy</h3>
+                    <div class="value" id="dash-best-acc">0%</div>
+                </div>
+                <div class="dash-card">
+                    <h3>Total Sessions</h3>
+                    <div class="value" id="dash-sessions">0</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; font-size: 1rem; color: var(--accent);">Recent History (<span id="history-profile-name">Default</span>)</h3>
+            <div style="overflow-x: auto;">
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mode</th>
+                            <th>WPM</th>
+                            <th>Accuracy</th>
+                            <th>Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>The Computer Point</strong> | Professional Typing Mastery Portal</p>
+        <p>100 Steps Training Guide System • Build Version 2.0.0</p>
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">Profiles stored locally. Use Export/Import to transfer data.</p>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Message saved!</div>
+
+    <script>
+        // --- DATA & PROFILE MANAGEMENT ---
+        let appData = {
+            profiles: ["Default Student"],
+            activeProfile: "Default Student",
+            history: {
+                "Default Student": []
+            }
+        };
+
+        function initData() {
+            const stored = localStorage.getItem('tcp_app_data');
+            if (stored) {
+                appData = JSON.parse(stored);
+            } else {
+                // Migration from older version if exists
+                const oldHistory = JSON.parse(localStorage.getItem('tcp_typing_history') || '[]');
+                if (oldHistory.length > 0) {
+                    appData.history["Default Student"] = oldHistory;
+                }
+                saveData();
+            }
+            populateProfileSelect();
+        }
+
+        function saveData() {
+            localStorage.setItem('tcp_app_data', JSON.stringify(appData));
+        }
+
+        function populateProfileSelect() {
+            const select = document.getElementById('profile-select');
+            select.innerHTML = '';
+            appData.profiles.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.innerText = p;
+                if(p === appData.activeProfile) opt.selected = true;
+                select.appendChild(opt);
+            });
+            document.getElementById('history-profile-name').innerText = appData.activeProfile;
+            loadDashboard();
+        }
+
+        function switchProfile() {
+            const select = document.getElementById('profile-select');
+            appData.activeProfile = select.value;
+            saveData();
+            document.getElementById('history-profile-name').innerText = appData.activeProfile;
+            loadDashboard();
+            showToast("Profile switched to " + appData.activeProfile);
+            resetTest();
+        }
+
+        function createNewProfile() {
+            const name = prompt("Enter new student name:");
+            if (name && name.trim().length > 0) {
+                const cleanName = name.trim();
+                if (!appData.profiles.includes(cleanName)) {
+                    appData.profiles.push(cleanName);
+                    appData.history[cleanName] = [];
+                    appData.activeProfile = cleanName;
+                    saveData();
+                    populateProfileSelect();
+                    showToast("Profile created successfully!");
+                } else {
+                    showToast("Profile already exists!", true);
+                }
+            }
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "tcp_typing_profiles.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            showToast("Data Exported!");
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if(imported.profiles && imported.history) {
+                        appData = imported;
+                        saveData();
+                        populateProfileSelect();
+                        showToast("Data Imported Successfully!");
+                    } else {
+                        showToast("Invalid save file format.", true);
+                    }
+                } catch (err) {
+                    showToast("Error parsing file.", true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- CONTENT LIBRARY (Extracted from Mastery Guide) ---
+        const sentenceLibrary = {
+            easy: [
+                "the quick brown fox jumps.",
+                "asdf jkl; asdf jkl; a s d f j k l ;",
+                "all fall dad glad sad fad.",
+                "ask dad for a glass of water.",
+                "a bad fad had glad lad.",
+                "typing is fun and fast.",
+                "he is a good boy.",
+                "we are going to learn."
+            ],
+            medium: [
+                "Typing is a core physical skill in the modern workplace; mastering it allows you to process information at professional industry speeds.",
+                "Sit with your back straight and shoulders relaxed; leaning forward creates tension that slows down your finger response time.",
+                "Keep both feet flat on the floor to maintain body balance; avoid crossing your ankles as it affects your core stability and focus.",
+                "Keep your elbows bent at a 90-degree angle; your forearms should be parallel to the floor for the most efficient reach.",
+                "Your eyes should be level with the top third of the monitor; if the screen is too low, you will naturally look down at your fingers.",
+                "Ensure the center of the keyboard is aligned with your body to prevent reaching too far to one side.",
+                "Never rest your wrists on the table or keyboard while typing; keep them slightly lifted to allow your fingers to move with maximum agility.",
+                "Maintain steady breathing and a calm mindset; physical or mental stress is the leading cause of typing errors and reduced speed.",
+                "The middle row of letters is your permanent base; your fingers must always start here and return here after every single tap."
+            ],
+            hard: [
+                "The total cost is $1,200 (including 18% GST). Contact us at info@example.com!",
+                "In 2026, the WPM goal is 85+ with < 2% error rate; can you achieve it?",
+                "Use the Shift key to access the symbols above the number keys, such as the @ sign (Shift+2) and % (Shift+5).",
+                "Let's test parentheses (), brackets [], braces {}, and backslashes \\. Don't forget 'quotes' and \"double quotes\".",
+                "High-speed typing allows you to complete complex office tasks up to 400% faster than those using the 'two-finger' method.",
+                "Maintain a distance of 20 to 30 inches from your screen to prevent eye fatigue and keep your concentration sharp during long sessions.",
+                "Once you reach 98% accuracy, try to type 5 WPM faster than your comfort zone for 1 minute to stretch your brain's capacity."
+            ],
+            exam: [
+                "The Computer Point Final Examination: Typing is a core physical skill in the modern workplace. You must master the 100 steps of Typing Mastery. If your hands are shaking or tense, your speed will always stay low. Treat your tools with respect; keep your keyboard clean and dust-free so the keys never lose their tactile response. Remember to use Ctrl + Backspace to delete an entire word at once. Your goal is 35 WPM with 99% accuracy; this is the Job-Ready standard."
+            ]
+        };
+
+        let currentText = "";
+        
+        // --- STATE VARIABLES ---
+        let timer = 0;
+        let timeRemaining = 60;
+        let maxTime = 60;
+        let timerInterval = null;
+        let isTyping = false;
+        
+        let charIndex = 0;
+        let errors = 0;
+        let totalTyped = 0;
+        
+        // --- DOM ELEMENTS ---
+        const inputField = document.getElementById('practice-text-input');
+        const textDisplay = document.getElementById('text-display');
+        const typingContainer = document.getElementById('typing-container');
+        const modeSelect = document.getElementById('mode-select');
+        const timeSelect = document.getElementById('time-select');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const statTime = document.getElementById('stat-time');
+        const statWPM = document.getElementById('stat-wpm');
+        const statAcc = document.getElementById('stat-acc');
+        const statErrors = document.getElementById('stat-errors');
+        
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            initData();
+            loadText();
+            setupEventListeners();
+        };
+
+        function setupEventListeners() {
+            // Focus mechanics
+            typingContainer.addEventListener('click', () => {
+                inputField.focus();
+                typingContainer.classList.add('focused');
+            });
+            inputField.addEventListener('blur', () => {
+                typingContainer.classList.remove('focused');
+            });
+
+            // Input handling
+            inputField.addEventListener('input', handleInput);
+            
+            // STRICT BLOCK BACKSPACE VIA KEYDOWN
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Backspace' || e.key === 'Backspace') {
+                    e.preventDefault(); // Stop backspace action globally
+                    showToast("Backspace is disabled! Keep moving forward.", true);
+                } else {
+                    handleKeyDownVisuals(e); // Glow keys
+                }
+            });
+            document.addEventListener('keyup', handleKeyUpVisuals);
+        }
+
+        // --- TYPING LOGIC ---
+        function loadText() {
+            const mode = modeSelect.value;
+            
+            if (mode === 'exam') {
+                currentText = sentenceLibrary.exam[0];
+                timeSelect.value = "60";
+                timeSelect.disabled = true; // Lock timer
+            } else {
+                timeSelect.disabled = false;
+                // Auto generate random paragraph by combining 3-4 sentences
+                const pool = sentenceLibrary[mode];
+                let selected = [];
+                const sentenceCount = Math.floor(Math.random() * 2) + 3; // 3 or 4 sentences
+                for(let i=0; i<sentenceCount; i++) {
+                    selected.push(pool[Math.floor(Math.random() * pool.length)]);
+                }
+                currentText = selected.join(" ");
+            }
+            
+            renderText();
+            resetTest();
+        }
+
+        function renderText() {
+            textDisplay.innerHTML = "";
+            currentText.split("").forEach((char) => {
+                const span = document.createElement("span");
+                span.innerText = char;
+                textDisplay.appendChild(span);
+            });
+            if(textDisplay.childNodes.length > 0) {
+                textDisplay.childNodes[0].classList.add("active");
+            }
+        }
+
+        function handleInput(e) {
+            if (!isTyping) startTimer();
+
+            // Intercept mobile backspace/deletions if they bypass keydown
+            if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteWordBackward') {
+                inputField.value = " "; // Maintain dummy space
+                showToast("Backspace is disabled!", true);
+                return;
+            }
+
+            const typedVal = inputField.value;
+            const typedChar = typedVal[typedVal.length - 1]; 
+            
+            if (typedChar) {
+                processKeystroke(typedChar);
+            }
+            
+            // Clear input field to prevent massive string accumulation, but leave 1 space for mobile keyboard stability
+            inputField.value = " ";
+        }
+
+        function processKeystroke(char) {
+            const spans = textDisplay.childNodes;
+            if (charIndex >= currentText.length) return;
+
+            const targetChar = currentText[charIndex];
+            
+            if (char === targetChar) {
+                spans[charIndex].classList.add('correct');
+            } else {
+                spans[charIndex].classList.add('incorrect');
+                errors++;
+                statErrors.innerText = errors;
+            }
+            
+            // Always move forward - No fixing mistakes!
+            spans[charIndex].classList.remove('active');
+            charIndex++;
+            totalTyped++;
+            
+            if (charIndex < currentText.length) {
+                spans[charIndex].classList.add('active');
+            }
+
+            updateStats();
+            checkCompletion();
+        }
+
+        // --- TIMERS & STATS ---
+        function startTimer() {
+            isTyping = true;
+            maxTime = parseInt(timeSelect.value);
+            timeRemaining = maxTime;
+            
+            timerInterval = setInterval(() => {
+                timer++;
+                
+                if (maxTime > 0) {
+                    timeRemaining--;
+                    statTime.innerText = formatTime(timeRemaining);
+                    if (timeRemaining <= 0) finishTest();
+                } else {
+                    statTime.innerText = formatTime(timer);
+                }
+                updateStats();
+            }, 1000);
+        }
+
+        function updateStats() {
+            const timeInMins = timer / 60;
+            let wpm = 0;
+            if (timeInMins > 0) {
+                const correctChars = totalTyped - errors;
+                wpm = Math.max(0, Math.round((correctChars / 5) / timeInMins));
+            }
+            
+            let accuracy = 100;
+            if (totalTyped > 0) {
+                accuracy = Math.round(((totalTyped - errors) / totalTyped) * 100);
+            }
+
+            statWPM.innerText = wpm;
+            statAcc.innerText = accuracy + "%";
+            
+            const progress = (charIndex / currentText.length) * 100;
+            progressBar.style.width = progress + "%";
+        }
+
+        function resetTest() {
+            clearInterval(timerInterval);
+            timer = 0;
+            charIndex = 0;
+            errors = 0;
+            totalTyped = 0;
+            isTyping = false;
+            inputField.value = " "; // Dummy space
+            
+            maxTime = parseInt(timeSelect.value);
+            timeRemaining = maxTime;
+            
+            statTime.innerText = maxTime > 0 ? formatTime(maxTime) : "00:00";
+            statWPM.innerText = "0";
+            statAcc.innerText = "100%";
+            statErrors.innerText = "0";
+            progressBar.style.width = "0%";
+            
+            // Remove all classes
+            textDisplay.childNodes.forEach(span => {
+                span.className = '';
+            });
+            if(textDisplay.childNodes.length > 0) {
+                textDisplay.childNodes[0].classList.add('active');
+            }
+        }
+
+        function finishTest() {
+            clearInterval(timerInterval);
+            inputField.blur();
+            
+            const finalWPM = parseInt(statWPM.innerText);
+            const finalAcc = parseInt(statAcc.innerText);
+            const mode = modeSelect.options[modeSelect.selectedIndex].text.split(' ')[0];
+            
+            saveSession(finalWPM, finalAcc, mode, errors);
+            showToast(`Test Complete! WPM: ${finalWPM} | Accuracy: ${finalAcc}%`);
+        }
+
+        function checkCompletion() {
+            if (charIndex >= currentText.length) {
+                finishTest();
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+        }
+
+        // --- KEYBOARD VISUALS ---
+        function handleKeyDownVisuals(e) {
+            const code = e.code;
+            const keyElement = document.querySelector(`.key[data-code="${code}"]`);
+            if(keyElement) {
+                keyElement.classList.add('pressed');
+            }
+        }
+
+        function handleKeyUpVisuals(e) {
+            const code = e.code;
+            const keyElement = document.querySelector(`.key[data-code="${code}"]`);
+            if(keyElement) {
+                keyElement.classList.remove('pressed');
+            }
+        }
+
+        // --- DASHBOARD SAVING ---
+        function saveSession(wpm, accuracy, mode, errorsCount) {
+            if(wpm <= 0) return; 
+            
+            const history = appData.history[appData.activeProfile];
+            const newRecord = {
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now(),
+                wpm: wpm,
+                accuracy: accuracy,
+                mode: mode,
+                errors: errorsCount
+            };
+            
+            history.unshift(newRecord); 
+            if(history.length > 30) history.pop(); // Keep last 30 per profile
+            
+            saveData();
+            loadDashboard();
+        }
+
+        function loadDashboard() {
+            const history = appData.history[appData.activeProfile] || [];
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                document.getElementById('dash-best-wpm').innerText = "0";
+                document.getElementById('dash-avg-wpm').innerText = "0";
+                document.getElementById('dash-best-acc').innerText = "0%";
+                document.getElementById('dash-sessions').innerText = "0";
+                return;
+            }
+
+            let bestWpm = 0;
+            let totalWpm = 0;
+            let bestAcc = 0;
+
+            history.forEach((rec, index) => {
+                if (rec.wpm > bestWpm) bestWpm = rec.wpm;
+                if (rec.accuracy > bestAcc) bestAcc = rec.accuracy;
+                totalWpm += rec.wpm;
+
+                if(index < 5) { // Top 5 recent
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${rec.date}</td>
+                        <td>${rec.mode}</td>
+                        <td style="color:var(--accent); font-weight:bold;">${rec.wpm}</td>
+                        <td>${rec.accuracy}%</td>
+                        <td style="color:var(--incorrect);">${rec.errors}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+            const avgWpm = Math.round(totalWpm / history.length);
+
+            document.getElementById('dash-best-wpm').innerText = bestWpm;
+            document.getElementById('dash-avg-wpm').innerText = avgWpm;
+            document.getElementById('dash-best-acc').innerText = bestAcc + "%";
+            document.getElementById('dash-sessions').innerText = history.length;
+        }
+
+        // --- UI UTILS ---
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            if(isError) toast.classList.add('error-toast');
+            else toast.classList.remove('error-toast');
+            
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
