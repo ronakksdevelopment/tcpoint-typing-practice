@@ -41,7 +41,7 @@
         @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px var(--accent-glow); } 50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.7); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
 
-        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         .shake-anim { animation: shake 0.3s ease-in-out; }
 
         /* Navigation */
@@ -86,7 +86,7 @@
         .btn-danger:hover { background-color: var(--incorrect); color: white; border-color: var(--incorrect); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
 
         .panel { background-color: var(--bg-panel); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); transition: all 0.3s ease; position: relative; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;}
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; position: relative; z-index: 60; }
         .panel-title { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
         .stats-bar { display: flex; justify-content: space-between; background-color: var(--bg-sec); padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; transition: opacity 0.3s; }
@@ -102,7 +102,7 @@
         .target-box span.incorrect { color: var(--incorrect); text-decoration: line-through; background-color: rgba(239, 68, 68, 0.1); }
         .target-box span.error-highlight { color: var(--incorrect); background-color: rgba(239, 68, 68, 0.2); border-bottom: 3px solid var(--incorrect); }
 
-        .user-input-box { width: 100%; padding: 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; background-color: var(--bg-sec); color: var(--text-main); border: 2px solid var(--border-color); border-radius: 8px; outline: none; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .user-input-box { width: 100%; padding: 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; background-color: var(--bg-sec); color: var(--text-main); border: 2px solid var(--border-color); border-radius: 8px; outline: none; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 60;}
         .user-input-box:focus { border-color: var(--accent); animation: pulseGlow 2s infinite; }
         .user-input-box.input-error { border-color: var(--incorrect); background-color: rgba(239, 68, 68, 0.05); color: var(--incorrect); animation: none; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
 
@@ -142,11 +142,17 @@
 
         /* Profile & Dashboard */
         .profile-container { display: flex; align-items: center; gap: 10px; background-color: var(--bg-sec); padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap;}
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        
+        /* Dashboard 8-Grid perfectly aligned */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        
         .dash-card { background-color: var(--bg-sec); padding: 1.2rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); position: relative; overflow: hidden; }
         .dash-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--accent); opacity: 0.5; }
         .dash-card.card-green::before { background: var(--correct); }
         .dash-card.card-purple::before { background: var(--grade-s); }
+        .dash-card.card-danger::before { background: var(--incorrect); }
         .dash-card h3 { font-size: 0.85rem; color: var(--text-sec); margin-bottom: 5px; font-weight: 500;}
         .dash-card .value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         .dash-card .sub-value { font-size: 0.75rem; color: var(--text-sec); margin-top: 4px; }
@@ -233,21 +239,15 @@
     <nav>
         <div class="logo">
             <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CP" alt="Logo" class="custom-logo" id="brand-logo" onerror="this.style.display='none'">
-            <div>THE COMPUTER <span>POINT</span> <span class="version-badge">V3.5</span></div>
+            <div>THE COMPUTER <span>POINT</span> <span class="version-badge">V3.5 Final</span></div>
         </div>
         <div class="nav-links">
             <div class="toggle-group">
-                <label class="switch-container" title="Toggle Sound Effects">
-                    <span style="margin-right: 5px;">🔊 Audio FX</span>
-                    <div class="switch">
-                        <input type="checkbox" id="sound-toggle" onchange="toggleSound(event)">
-                        <span class="slider"></span>
-                    </div>
-                </label>
                 <label class="switch-container" title="Hide distractions">
                     <span style="margin-right: 5px;">🧘‍♂️ Focus Mode</span>
                     <div class="switch">
-                        <input type="checkbox" id="zen-toggle" onchange="toggleZenMode(event)">
+                        <!-- onmousedown prevents focus loss to keep you actively typing -->
+                        <input type="checkbox" id="zen-toggle" onchange="toggleZenMode()" onmousedown="event.preventDefault()">
                         <span class="slider"></span>
                     </div>
                 </label>
@@ -271,9 +271,8 @@
                     Student Profiles & Global Save Data
                 </div>
                 <div class="flex">
-                    <button class="btn btn-outline btn-small" onclick="exportData()">Export Save (.json)</button>
-                    <button class="btn btn-outline btn-small" onclick="document.getElementById('import-file').click()">Import Save</button>
-                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
+                    <button class="btn btn-outline btn-small" onclick="document.getElementById('import-txt').click()">Import Practice Notes (.txt)</button>
+                    <input type="file" id="import-txt" class="hidden" accept=".txt" onchange="importTxt(event)">
                 </div>
             </div>
             
@@ -332,8 +331,9 @@
                     Live Typing Area
                 </div>
                 <div class="flex">
-                    <button class="btn btn-outline" onclick="loadText()">New Text</button>
-                    <button class="btn" onclick="resetTest()">Restart</button>
+                    <!-- onmousedown="event.preventDefault()" explicitly stops the button from stealing focus and triggering a blur/pause -->
+                    <button class="btn btn-outline" onmousedown="event.preventDefault()" onclick="loadText()">New Text</button>
+                    <button class="btn" onmousedown="event.preventDefault()" onclick="resetTest()">Restart</button>
                 </div>
             </div>
 
@@ -372,7 +372,7 @@
             <div class="keyboard" id="keyboard">
                 <div class="keyboard-header">
                     <span style="font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 1px;">Virtual Switch Layout</span>
-                    <button class="btn btn-outline btn-small btn-danger" id="btn-weak-keys" onclick="toggleWeakKeys()">Show Weak Keys</button>
+                    <button class="btn btn-outline btn-small btn-danger" id="btn-weak-keys" onmousedown="event.preventDefault()" onclick="toggleWeakKeys()">Show Weak Keys</button>
                 </div>
                 <!-- Row 1 -->
                 <div class="keyboard-row">
@@ -492,6 +492,16 @@
                     <div class="value" id="dash-total-time">0m</div>
                     <div class="sub-value">Total minutes typed</div>
                 </div>
+                <div class="dash-card card-danger">
+                    <h3>Lifetime Errors</h3>
+                    <div class="value" id="dash-total-errors">0</div>
+                    <div class="sub-value">Keys missed completely</div>
+                </div>
+                <div class="dash-card card-green">
+                    <h3>Perfect Sessions</h3>
+                    <div class="value" id="dash-perfect-sessions">0</div>
+                    <div class="sub-value">100% Accuracy scored</div>
+                </div>
             </div>
 
             <h3 style="margin-top: 1.5rem; font-size: 1rem; color: var(--accent);">Recent History (<span id="history-profile-name">Default</span>)</h3>
@@ -596,80 +606,25 @@
     <!-- Footer -->
     <footer>
         <p><strong>The Computer Point</strong> | Professional Typing Mastery Portal</p>
-        <p>Build Version 3.5.0 Final (Ultimate Analytics, Deep Saving, Smart Sync)</p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">All session data is safely persisted in browser storage.</p>
+        <p>Designed by Rajdeep Singh using Gemini AI.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">Progress is automatically saved to your browser history. Clearing your browser data will reset your progress.</p>
     </footer>
 
     <!-- Toast -->
     <div class="toast" id="toast">Message saved!</div>
 
     <script>
-        // --- AUDIO ENGINE ---
-        let audioCtx = null;
-        let isSoundEnabled = false;
-
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        function toggleSound(e) {
-            isSoundEnabled = document.getElementById('sound-toggle').checked;
-            if (isSoundEnabled) initAudio();
-            if(e && e.target) e.target.blur(); 
-            if(document.activeElement !== inputField && !isPaused) inputField.focus();
-        }
-
-        function toggleZenMode(e) {
-            const isZen = document.getElementById('zen-toggle').checked;
-            if(isZen) document.body.classList.add('zen-mode');
-            else document.body.classList.remove('zen-mode');
-            if(e && e.target) e.target.blur();
-            if(document.activeElement !== inputField && !isPaused) inputField.focus();
-        }
-
-        function playSound(type) {
-            if (!isSoundEnabled || !audioCtx) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            if (type === 'tap') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-            } else if (type === 'error') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-            } else if (type === 'finish') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
-                osc.frequency.setValueAtTime(554.37, audioCtx.currentTime + 0.1); 
-                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2); 
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-            }
-        }
-
         // --- DATA ENGINE & DEEP MIGRATION ---
         let appData = {
             version: "3.5",
             profiles: ["Default Student"],
             activeProfile: "Default Student",
             history: { "Default Student": [] },
-            stats: { "Default Student": { totalTime: 0, totalWords: 0, weakKeys: {} } }
+            stats: { "Default Student": { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} } }
         };
 
-        function initData() {
+        // Immediately invoked function to guarantee data is fetched instantly, avoiding load delays.
+        (function initData() {
             const stored = localStorage.getItem('tcp_app_data');
             if (stored) {
                 try {
@@ -686,7 +641,13 @@
                     
                     appData.profiles.forEach(p => {
                         if(!appData.history[p]) appData.history[p] = [];
-                        if(!appData.stats[p]) appData.stats[p] = { totalTime: 0, totalWords: 0, weakKeys: {} };
+                        if(!appData.stats[p]) {
+                            appData.stats[p] = { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} };
+                        } else {
+                            // Catch legacy stats without new fields
+                            if(typeof appData.stats[p].totalErrors === 'undefined') appData.stats[p].totalErrors = 0;
+                            if(typeof appData.stats[p].perfectSessions === 'undefined') appData.stats[p].perfectSessions = 0;
+                        }
                     });
                 } catch(e) { console.error("Data parse error, using defaults"); }
             } else {
@@ -697,12 +658,7 @@
                 }
                 saveData();
             }
-            populateProfileSelect();
-            
-            // Re-sync UI state based on loaded data
-            document.getElementById('sound-toggle').checked = false;
-            document.getElementById('zen-toggle').checked = false;
-        }
+        })();
 
         function saveData() { localStorage.setItem('tcp_app_data', JSON.stringify(appData)); }
 
@@ -738,7 +694,7 @@
                 if (!appData.profiles.includes(cleanName)) {
                     appData.profiles.push(cleanName);
                     appData.history[cleanName] = [];
-                    appData.stats[cleanName] = { totalTime: 0, totalWords: 0, weakKeys: {} };
+                    appData.stats[cleanName] = { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} };
                     appData.activeProfile = cleanName;
                     saveData();
                     populateProfileSelect();
@@ -767,35 +723,33 @@
             }
         }
 
-        function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", `tcp_typing_profiles_V3.5_${new Date().getTime()}.json`);
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-            showToast("Data Export Backup Generated!");
-        }
-
-        function importData(event) {
+        // --- Custom File Import (.txt) ---
+        function importTxt(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if(imported.profiles && imported.history) {
-                        appData = imported;
-                        initData(); // Re-run validation checks
-                        saveData();
-                        populateProfileSelect();
-                        showToast("Data Imported Successfully!");
-                    } else { showToast("Invalid save file format.", true); }
-                } catch (err) { showToast("Error parsing file.", true); }
+                const text = e.target.result.trim();
+                if (!text || text.length === 0) { showToast("Text file is empty!", true); return; }
+                
+                sentenceLibrary.custom = [text];
+                
+                const modeSelect = document.getElementById('mode-select');
+                let customOpt = Array.from(modeSelect.options).find(opt => opt.value === 'custom');
+                if (!customOpt) {
+                    customOpt = document.createElement('option');
+                    customOpt.value = 'custom';
+                    customOpt.innerText = 'Custom Imported Notes';
+                    modeSelect.appendChild(customOpt);
+                }
+                customOpt.disabled = false;
+                modeSelect.value = 'custom';
+                
+                loadText();
+                showToast("Practice notes successfully loaded!");
             };
             reader.readAsText(file);
-            event.target.value = ''; // Reset input
+            event.target.value = ''; // Reset input to allow re-uploading the same file
         }
 
         // --- CONTENT LIBRARY ---
@@ -859,9 +813,11 @@
         const statErrors = document.getElementById('stat-errors');
         const pauseOverlay = document.getElementById('pause-overlay');
 
-        // --- INITIALIZATION ---
+        // --- INITIALIZATION ALIGNMENT ---
         window.onload = () => {
-            initData();
+            // Ensure default dropdown starts visibly loaded without blanking
+            modeSelect.value = "easy"; 
+            populateProfileSelect();
             loadText();
             setupEventListeners();
         };
@@ -885,6 +841,15 @@
                     e.preventDefault();
                 }
             });
+        }
+
+        // --- SMART UI FEATURES ---
+        function toggleZenMode() {
+            const isZen = document.getElementById('zen-toggle').checked;
+            if(isZen) document.body.classList.add('zen-mode');
+            else document.body.classList.remove('zen-mode');
+            
+            if(document.activeElement !== inputField && !isPaused) inputField.focus();
         }
 
         // --- SMART PAUSE LOGIC ---
@@ -916,6 +881,9 @@
                 fullText = sentenceLibrary.exam[0];
                 timeSelect.value = "60";
                 timeSelect.disabled = true;
+            } else if (mode === 'custom') {
+                fullText = sentenceLibrary.custom[0];
+                timeSelect.disabled = false;
             } else {
                 timeSelect.disabled = false;
                 const pool = sentenceLibrary[mode];
@@ -950,7 +918,7 @@
             if (expectedChar && expectedChar !== ' ') {
                 const charLower = expectedChar.toLowerCase();
                 let pStats = appData.stats[appData.activeProfile];
-                if (!pStats) pStats = appData.stats[appData.activeProfile] = { totalTime: 0, totalWords: 0, weakKeys: {} };
+                if (!pStats) pStats = appData.stats[appData.activeProfile] = { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} };
                 if (!pStats.weakKeys) pStats.weakKeys = {};
                 pStats.weakKeys[charLower] = (pStats.weakKeys[charLower] || 0) + 1;
             }
@@ -965,8 +933,6 @@
 
             if (!targetWord || !wordSpan) return;
 
-            playSound('tap');
-
             // Spacebar detection (Word submission)
             if (val.endsWith(' ') || (e.data === ' ' && val.includes(' '))) {
                 const typedWord = val.trim();
@@ -980,7 +946,6 @@
                     errors++;
                     statErrors.innerText = errors;
                     triggerErrorShake();
-                    playSound('error');
                     trackWeakKey(targetWord, val);
                 }
                 
@@ -1012,7 +977,6 @@
                 } else {
                     if(!inputField.classList.contains('input-error')) {
                         triggerErrorShake();
-                        playSound('error');
                         trackWeakKey(targetWord, val);
                     }
                     wordSpan.classList.add('error-highlight');
@@ -1125,7 +1089,6 @@
             clearInterval(timerInterval);
             inputField.disabled = true;
             isTyping = false;
-            playSound('finish');
             
             // CRITICAL FIX: Mathematically recalculate exactly what the final score should be
             // to bypass the bug where WPM reads as 0 if the DOM hasn't flushed yet.
@@ -1140,6 +1103,8 @@
             let pStats = appData.stats[appData.activeProfile];
             pStats.totalTime += (timer / 60); // in minutes
             pStats.totalWords += correctWordsCount;
+            pStats.totalErrors += errors;
+            if (calcAcc === 100 && totalAttemptedWords > 0) pStats.perfectSessions += 1;
 
             // Store for printing
             lastSessionData = {
@@ -1264,7 +1229,7 @@
 
         // --- SAVING & DASHBOARD ---
         function saveSession(wpm, accuracy, mode, errorsCount, grade) {
-            // CRITICAL FIX: Only return if they attempted NO words. (Allows 0 WPM save tracking if wanted)
+            // CRITICAL FIX: Only return if they attempted NO words. 
             if(totalAttemptedWords === 0) return; 
             
             const history = appData.history[appData.activeProfile];
@@ -1285,12 +1250,14 @@
 
         function loadDashboard() {
             const history = appData.history[appData.activeProfile] || [];
-            const pStats = appData.stats[appData.activeProfile] || { totalTime: 0, totalWords: 0 };
+            const pStats = appData.stats[appData.activeProfile] || { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0 };
             const tbody = document.getElementById('history-body');
             tbody.innerHTML = ''; // Clear table correctly every load
 
-            // Update Lifetime Stats View
+            // Update Lifetime Stats View (8 Perfectly Aligned Cards)
             document.getElementById('dash-total-words').innerText = pStats.totalWords.toLocaleString();
+            document.getElementById('dash-total-errors').innerText = pStats.totalErrors.toLocaleString();
+            document.getElementById('dash-perfect-sessions').innerText = pStats.perfectSessions.toLocaleString();
             let displayTime = Math.round(pStats.totalTime);
             if(displayTime > 60) {
                 let hrs = Math.floor(displayTime / 60);
