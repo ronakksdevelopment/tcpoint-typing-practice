@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Computer Point | Official Typing Practice Portal</title>
+    <title>The Computer Point | Official Typing Practice Portal V3.5</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
@@ -45,11 +45,13 @@
         .shake-anim { animation: shake 0.3s ease-in-out; }
 
         /* Navigation */
-        nav { background-color: var(--bg-sec); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; transition: transform 0.3s ease; }
+        nav { background-color: var(--bg-sec); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         .logo { display: flex; align-items: center; gap: 12px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--text-main); }
         .custom-logo { height: 35px; width: auto; border-radius: 4px; object-fit: contain; }
         .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .version-badge { background: var(--primary); font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; margin-left: 5px; }
+        
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
         .nav-links a { color: var(--text-sec); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
@@ -65,15 +67,16 @@
         input:checked + .slider:before { transform: translateX(20px); }
 
         /* Main Container */
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; flex-grow: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; flex-grow: 1; width: 100%; transition: all 0.3s ease; }
 
         /* Hero & Panels */
-        .hero { text-align: center; padding: 2rem 0; margin-bottom: 1rem; }
+        .hero { text-align: center; padding: 2rem 0; margin-bottom: 1rem; transition: opacity 0.3s; }
         .hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; }
         .hero p { color: var(--text-sec); font-size: 1.1rem; max-width: 700px; margin: 0 auto 2rem; }
 
         .btn { background-color: var(--primary); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
         .btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px var(--accent-glow); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-sec); }
         .btn-outline:hover { background-color: var(--bg-panel); color: var(--text-main); border-color: var(--text-sec); }
         .btn-small { padding: 0.5rem 1rem; font-size: 0.85rem; }
@@ -82,7 +85,7 @@
         .btn-danger { background-color: rgba(239, 68, 68, 0.1); color: var(--incorrect); border: 1px solid rgba(239, 68, 68, 0.3); }
         .btn-danger:hover { background-color: var(--incorrect); color: white; border-color: var(--incorrect); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
 
-        .panel { background-color: var(--bg-panel); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); transition: opacity 0.3s; position: relative; }
+        .panel { background-color: var(--bg-panel); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); transition: all 0.3s ease; position: relative; }
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;}
         .panel-title { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
@@ -93,7 +96,7 @@
 
         /* Typing Area & Overlay */
         .target-box { background-color: var(--bg-sec); border-radius: 8px; padding: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; line-height: 1.8; color: var(--text-sec); user-select: none; word-wrap: break-word; max-height: 160px; overflow-y: auto; border: 1px solid var(--border-color); margin-bottom: 1rem; box-shadow: inset 0 4px 6px rgba(0,0,0,0.2); transition: all 0.3s; position: relative; }
-        .target-box span { padding: 2px 4px; margin: 0 1px; border-radius: 4px; transition: all 0.15s; display: inline-block; }
+        .target-box span { padding: 2px 4px; margin: 0 1px; border-radius: 4px; transition: all 0.15s; display: inline-block; border-bottom: 3px solid transparent; }
         .target-box span.active { color: var(--text-main); background-color: rgba(59, 130, 246, 0.25); border-bottom: 3px solid var(--accent); }
         .target-box span.correct { color: var(--correct); }
         .target-box span.incorrect { color: var(--incorrect); text-decoration: line-through; background-color: rgba(239, 68, 68, 0.1); }
@@ -157,24 +160,33 @@
         /* Modal / Analytics */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--bg-panel); width: 90%; max-width: 600px; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .modal-header { text-align: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; }
+        .modal-content { background: var(--bg-panel); width: 90%; max-width: 600px; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center;}
+        .modal-header { margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; }
         .modal-header h2 { font-family: 'Poppins'; font-size: 1.8rem; margin-bottom: 5px; }
         .modal-grade { font-size: 4rem; font-weight: 800; line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
         .modal-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
         .modal-stat { background: var(--bg-sec); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
-        .modal-actions { display: flex; gap: 1rem; justify-content: center; }
+        .modal-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
         /* Footer */
-        footer { background-color: var(--bg-sec); padding: 2rem; text-align: center; border-top: 1px solid var(--border-color); margin-top: auto; }
+        footer { background-color: var(--bg-sec); padding: 2rem; text-align: center; border-top: 1px solid var(--border-color); margin-top: auto; transition: opacity 0.3s; }
         footer p { color: var(--text-sec); font-size: 0.9rem; margin-bottom: 5px; }
 
         /* Zen Mode (Focus Mode) */
-        /* Removed the transform hide for nav to keep it visible while in Zen mode */
-        body.zen-mode .stats-bar, body.zen-mode .keyboard, body.zen-mode .panel-header, body.zen-mode #dashboard, body.zen-mode #profiles, body.zen-mode #settings, body.zen-mode footer { opacity: 0; pointer-events: none; height: 0; padding: 0; overflow: hidden; margin: 0; border: none;}
-        body.zen-mode .target-box { font-size: 1.6rem; max-height: 250px; padding: 2rem; border-color: transparent; background: transparent; box-shadow: none; text-align: center; margin-top: 5vh; }
+        /* Keep Navigation exactly as it is, simply hide other panels smoothly */
+        body.zen-mode .hero, body.zen-mode .stats-bar, body.zen-mode .keyboard, body.zen-mode .panel-header, body.zen-mode #dashboard, body.zen-mode #profiles, body.zen-mode #settings, body.zen-mode footer { 
+            opacity: 0; 
+            pointer-events: none; 
+            height: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            margin: 0; 
+            border: none;
+        }
+        body.zen-mode .container { padding-top: 5vh; max-width: 900px; }
+        body.zen-mode .target-box { font-size: 1.6rem; max-height: 250px; padding: 2rem; border-color: transparent; background: transparent; box-shadow: none; text-align: center; }
         body.zen-mode .user-input-box { font-size: 1.8rem; padding: 1.5rem; text-align: center; border-width: 0 0 2px 0; border-radius: 0; background: transparent; box-shadow: none;}
-        body.zen-mode #practice { border: none; box-shadow: none; background: transparent; padding-top: 2rem; }
+        body.zen-mode #practice { border: none; box-shadow: none; background: transparent; }
 
         /* Utility */
         .hidden { display: none !important; }
@@ -221,18 +233,18 @@
     <nav>
         <div class="logo">
             <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CP" alt="Logo" class="custom-logo" id="brand-logo" onerror="this.style.display='none'">
-            <div>THE COMPUTER <span>POINT</span></div>
+            <div>THE COMPUTER <span>POINT</span> <span class="version-badge">V3.5</span></div>
         </div>
         <div class="nav-links">
             <div class="toggle-group">
-                <label class="switch-container">
+                <label class="switch-container" title="Toggle Sound Effects">
                     <span style="margin-right: 5px;">🔊 Audio FX</span>
                     <div class="switch">
                         <input type="checkbox" id="sound-toggle" onchange="toggleSound(event)">
                         <span class="slider"></span>
                     </div>
                 </label>
-                <label class="switch-container">
+                <label class="switch-container" title="Hide distractions">
                     <span style="margin-right: 5px;">🧘‍♂️ Focus Mode</span>
                     <div class="switch">
                         <input type="checkbox" id="zen-toggle" onchange="toggleZenMode(event)">
@@ -248,7 +260,7 @@
         <!-- Hero -->
         <section class="hero">
             <h1>Professional Typing Mastery</h1>
-            <p>V3.2 Official Training Portal. Deep Analytics, Lifetime Tracking, and Smart Auto-Pause.</p>
+            <p>Ultimate Training Portal. Zero bugs, deep analytics, and absolute precision tracking.</p>
         </section>
 
         <!-- Profiles Panel -->
@@ -271,6 +283,7 @@
                     <!-- Populated via JS -->
                 </select>
                 <button class="btn" onclick="createNewProfile()">+ New Profile</button>
+                <button class="btn btn-outline btn-danger" onclick="deleteProfile()" style="margin-left: auto;">Delete Profile</button>
             </div>
         </section>
 
@@ -509,7 +522,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Session Complete!</h2>
-                <p style="color: var(--text-sec);" id="modal-subtitle">Great job. Here is your official performance evaluation.</p>
+                <p style="color: var(--text-sec);" id="modal-subtitle">Official performance evaluation.</p>
                 
                 <div class="modal-grade" id="modal-grade-text">A+</div>
                 <div style="color: var(--text-sec); font-size: 0.9rem;" id="modal-grade-desc">Excellent speed and accuracy.</div>
@@ -535,7 +548,8 @@
             </div>
 
             <div class="modal-actions">
-                <button class="btn btn-outline" onclick="closeModal()">Close & View Dashboard</button>
+                <button class="btn btn-outline" onclick="closeModal(false)">View Dashboard</button>
+                <button class="btn" onclick="closeModal(true)">Practice Again</button>
                 <button class="btn btn-print" onclick="triggerLastPrint()">🖨️ Print Certificate</button>
             </div>
         </div>
@@ -555,7 +569,7 @@
             </div>
             <div class="col">
                 <p><strong>Examination Mode:</strong> <span id="print-mode">Exam Mode</span></p>
-                <p><strong>Evaluation System:</strong> V3.2 Standardized Metrics</p>
+                <p><strong>Evaluation System:</strong> V3.5 Standardized Metrics</p>
             </div>
         </div>
         <div class="print-grade">
@@ -582,8 +596,8 @@
     <!-- Footer -->
     <footer>
         <p><strong>The Computer Point</strong> | Professional Typing Mastery Portal</p>
-        <p>Build Version 3.2.0 (Heatmap Analytics, Robust Saves, Smart Pause)</p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">All session data is automatically persisted securely in your local browser storage.</p>
+        <p>Build Version 3.5.0 Final (Ultimate Analytics, Deep Saving, Smart Sync)</p>
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">All session data is safely persisted in browser storage.</p>
     </footer>
 
     <!-- Toast -->
@@ -601,7 +615,6 @@
         function toggleSound(e) {
             isSoundEnabled = document.getElementById('sound-toggle').checked;
             if (isSoundEnabled) initAudio();
-            // Critical Fix: Remove focus from toggle so Spacebar doesn't trigger it during typing
             if(e && e.target) e.target.blur(); 
             if(document.activeElement !== inputField && !isPaused) inputField.focus();
         }
@@ -610,8 +623,6 @@
             const isZen = document.getElementById('zen-toggle').checked;
             if(isZen) document.body.classList.add('zen-mode');
             else document.body.classList.remove('zen-mode');
-            
-            // Critical Fix: Remove focus from toggle so Spacebar doesn't trigger it during typing
             if(e && e.target) e.target.blur();
             if(document.activeElement !== inputField && !isPaused) inputField.focus();
         }
@@ -649,9 +660,9 @@
             }
         }
 
-        // --- DATA ENGINE & MIGRATION ---
+        // --- DATA ENGINE & DEEP MIGRATION ---
         let appData = {
-            version: "3.2",
+            version: "3.5",
             profiles: ["Default Student"],
             activeProfile: "Default Student",
             history: { "Default Student": [] },
@@ -665,8 +676,14 @@
                     const parsed = JSON.parse(stored);
                     appData = { ...appData, ...parsed };
                     
-                    // V3.2 Migration: Ensure stats object exists for all profiles
+                    // Deep Validation to fix any corrupted cache states
+                    if (!appData.profiles || !Array.isArray(appData.profiles) || appData.profiles.length === 0) {
+                        appData.profiles = ["Default Student"];
+                        appData.activeProfile = "Default Student";
+                    }
+                    if (!appData.history) appData.history = {};
                     if (!appData.stats) appData.stats = {};
+                    
                     appData.profiles.forEach(p => {
                         if(!appData.history[p]) appData.history[p] = [];
                         if(!appData.stats[p]) appData.stats[p] = { totalTime: 0, totalWords: 0, weakKeys: {} };
@@ -675,7 +692,9 @@
             } else {
                 // Rescue extremely old V2.0 data if present
                 const oldHistory = JSON.parse(localStorage.getItem('tcp_typing_history') || '[]');
-                if (oldHistory.length > 0) appData.history["Default Student"] = oldHistory;
+                if (oldHistory.length > 0) {
+                    appData.history["Default Student"] = oldHistory;
+                }
                 saveData();
             }
             populateProfileSelect();
@@ -707,7 +726,7 @@
             saveData();
             document.getElementById('history-profile-name').innerText = appData.activeProfile;
             loadDashboard();
-            hideWeakKeys(); // reset keyboard heat map
+            hideWeakKeys(); 
             showToast("Profile switched to " + appData.activeProfile);
             resetTest();
         }
@@ -724,9 +743,27 @@
                     saveData();
                     populateProfileSelect();
                     showToast("Profile created successfully!");
+                    resetTest();
                 } else {
                     showToast("Profile already exists!", true);
                 }
+            }
+        }
+        
+        function deleteProfile() {
+            if (appData.profiles.length <= 1) {
+                showToast("Cannot delete the last remaining profile.", true);
+                return;
+            }
+            if (confirm(`Are you sure you want to delete the profile '${appData.activeProfile}'? All history will be lost forever.`)) {
+                appData.profiles = appData.profiles.filter(p => p !== appData.activeProfile);
+                delete appData.history[appData.activeProfile];
+                delete appData.stats[appData.activeProfile];
+                appData.activeProfile = appData.profiles[0]; // switch to first available
+                saveData();
+                populateProfileSelect();
+                showToast("Profile deleted successfully.");
+                resetTest();
             }
         }
 
@@ -734,11 +771,11 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", `tcp_typing_profiles_${new Date().getTime()}.json`);
+            downloadAnchorNode.setAttribute("download", `tcp_typing_profiles_V3.5_${new Date().getTime()}.json`);
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
-            showToast("Data Exported Backup Generated!");
+            showToast("Data Export Backup Generated!");
         }
 
         function importData(event) {
@@ -750,7 +787,7 @@
                     const imported = JSON.parse(e.target.result);
                     if(imported.profiles && imported.history) {
                         appData = imported;
-                        initData(); // Re-run migration validation just in case they imported V3.1
+                        initData(); // Re-run validation checks
                         saveData();
                         populateProfileSelect();
                         showToast("Data Imported Successfully!");
@@ -854,7 +891,7 @@
         function pauseTest() {
             if (!isTyping || isPaused) return;
             isPaused = true;
-            clearInterval(timerInterval);
+            clearInterval(timerInterval); // Strict clear to prevent ghost timers
             pauseOverlay.classList.add('active');
         }
 
@@ -866,7 +903,8 @@
             isPaused = false;
             pauseOverlay.classList.remove('active');
             inputField.focus();
-            timerInterval = setInterval(timerTick, 1000); // Resume interval
+            clearInterval(timerInterval); // Double verify no stacking
+            timerInterval = setInterval(timerTick, 1000); 
         }
 
         // --- TYPING LOGIC ---
@@ -906,7 +944,6 @@
         }
 
         function trackWeakKey(expectedWord, typedValue) {
-            // Find exactly which character they missed based on the typed length
             const errorIndex = typedValue.length - 1;
             const expectedChar = expectedWord[errorIndex];
             
@@ -915,10 +952,7 @@
                 let pStats = appData.stats[appData.activeProfile];
                 if (!pStats) pStats = appData.stats[appData.activeProfile] = { totalTime: 0, totalWords: 0, weakKeys: {} };
                 if (!pStats.weakKeys) pStats.weakKeys = {};
-                
                 pStats.weakKeys[charLower] = (pStats.weakKeys[charLower] || 0) + 1;
-                // Note: we don't save to localStorage instantly here to save performance, 
-                // it saves on test completion.
             }
         }
 
@@ -966,6 +1000,8 @@
                         nextSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 } else {
+                    // Update stats ONE last time before finalizing to capture absolute end score
+                    updateStats(); 
                     finishTest();
                 }
             } else {
@@ -975,7 +1011,6 @@
                     inputField.classList.remove('input-error');
                 } else {
                     if(!inputField.classList.contains('input-error')) {
-                        // First time making the mistake on this word stroke
                         triggerErrorShake();
                         playSound('error');
                         trackWeakKey(targetWord, val);
@@ -984,13 +1019,14 @@
                     inputField.classList.add('input-error');
                 }
                 
-                // Auto-Finish edge case (last word)
+                // Auto-Finish edge case (last word typed without a spacebar)
                 if (currentWordIndex === wordsArray.length - 1 && val === targetWord) {
                      wordSpan.className = 'correct';
                      correctCharsCount += targetWord.length; 
                      correctWordsCount++;
                      totalAttemptedWords++;
                      currentWordIndex++;
+                     updateStats();
                      finishTest();
                 }
             }
@@ -1005,6 +1041,7 @@
 
         // --- TIMERS & STATS ---
         function startTimer() {
+            clearInterval(timerInterval); // CRITICAL FIX: Kill any ghosts
             isTyping = true;
             isPaused = false;
             maxTime = parseInt(timeSelect.value);
@@ -1017,7 +1054,10 @@
             if (maxTime > 0) {
                 timeRemaining--;
                 statTime.innerText = formatTime(timeRemaining);
-                if (timeRemaining <= 0) finishTest();
+                if (timeRemaining <= 0) {
+                    updateStats();
+                    finishTest();
+                }
             } else {
                 statTime.innerText = formatTime(timer);
             }
@@ -1040,7 +1080,7 @@
         }
 
         function resetTest() {
-            clearInterval(timerInterval);
+            clearInterval(timerInterval); // CRITICAL FIX
             timer = 0;
             currentWordIndex = 0;
             correctCharsCount = 0;
@@ -1087,10 +1127,14 @@
             isTyping = false;
             playSound('finish');
             
-            const finalWPM = parseInt(statWPM.innerText);
-            const finalAcc = parseInt(statAcc.innerText);
+            // CRITICAL FIX: Mathematically recalculate exactly what the final score should be
+            // to bypass the bug where WPM reads as 0 if the DOM hasn't flushed yet.
+            const finalTimeInMins = timer > 0 ? timer / 60 : 1/60; 
+            const calcWPM = Math.max(0, Math.round((correctCharsCount / 5) / finalTimeInMins));
+            const calcAcc = totalAttemptedWords > 0 ? Math.round((correctWordsCount / totalAttemptedWords) * 100) : 0;
+            
             const mode = modeSelect.options[modeSelect.selectedIndex].text.split(' ')[0];
-            const gradeData = calculateGrade(finalWPM, finalAcc);
+            const gradeData = calculateGrade(calcWPM, calcAcc);
 
             // Update Global Lifetime Stats
             let pStats = appData.stats[appData.activeProfile];
@@ -1101,22 +1145,22 @@
             lastSessionData = {
                 date: new Date().toLocaleString(),
                 mode: modeSelect.options[modeSelect.selectedIndex].text,
-                wpm: finalWPM,
-                acc: finalAcc,
+                wpm: calcWPM,
+                acc: calcAcc,
                 wordsCorrect: correctWordsCount,
                 wordsAttempted: totalAttemptedWords,
                 errors: errors,
                 grade: gradeData
             };
             
-            saveSession(finalWPM, finalAcc, mode, errors, gradeData.letter);
+            saveSession(calcWPM, calcAcc, mode, errors, gradeData.letter);
             
             // Populate Modal
             document.getElementById('modal-grade-text').innerText = gradeData.letter;
             document.getElementById('modal-grade-text').style.color = gradeData.color;
             document.getElementById('modal-grade-desc').innerText = gradeData.desc;
-            document.getElementById('modal-wpm').innerText = finalWPM;
-            document.getElementById('modal-acc').innerText = finalAcc + "%";
+            document.getElementById('modal-wpm').innerText = calcWPM;
+            document.getElementById('modal-acc').innerText = calcAcc + "%";
             document.getElementById('modal-correct').innerText = `${correctWordsCount} / ${totalAttemptedWords}`;
             document.getElementById('modal-errors').innerText = errors;
             
@@ -1124,13 +1168,17 @@
             document.getElementById('result-modal').classList.add('active');
         }
 
-        function closeModal() {
+        function closeModal(doReset = false) {
             document.getElementById('result-modal').classList.remove('active');
             if(document.body.classList.contains('zen-mode')) {
                 document.getElementById('zen-toggle').checked = false;
-                toggleZenMode(); // Call it programmatically to turn off
+                toggleZenMode();
             }
-            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+            if (doReset) {
+                loadText(); // Auto-generates a new test text & resets
+            } else {
+                document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         function formatTime(seconds) {
@@ -1169,7 +1217,6 @@
 
                 if (!pStats || !pStats.weakKeys) return;
                 
-                // Find max errors to normalize opacity/color
                 let maxErrors = 0;
                 for (let key in pStats.weakKeys) {
                     if (pStats.weakKeys[key] > maxErrors) maxErrors = pStats.weakKeys[key];
@@ -1192,7 +1239,6 @@
                         if (pStats.weakKeys[cleanCode]) {
                             const errorRatio = pStats.weakKeys[cleanCode] / maxErrors;
                             k.classList.add('weak-key');
-                            // Dynamic intensity based on error frequency
                             k.style.backgroundColor = `rgba(239, 68, 68, ${0.2 + (0.6 * errorRatio)})`;
                         }
                     });
@@ -1211,14 +1257,15 @@
             btn.style.backgroundColor = "transparent";
             document.querySelectorAll('.key').forEach(k => {
                 k.classList.remove('weak-key');
-                k.style.backgroundColor = ""; // Clear inline override
+                k.style.backgroundColor = ""; 
             });
         }
 
 
         // --- SAVING & DASHBOARD ---
         function saveSession(wpm, accuracy, mode, errorsCount, grade) {
-            if(wpm <= 0) return; 
+            // CRITICAL FIX: Only return if they attempted NO words. (Allows 0 WPM save tracking if wanted)
+            if(totalAttemptedWords === 0) return; 
             
             const history = appData.history[appData.activeProfile];
             history.unshift({
@@ -1231,7 +1278,7 @@
                 grade: grade
             });
             
-            if(history.length > 50) history.pop(); // Keep last 50
+            if(history.length > 50) history.pop(); 
             saveData();
             loadDashboard();
         }
@@ -1240,7 +1287,7 @@
             const history = appData.history[appData.activeProfile] || [];
             const pStats = appData.stats[appData.activeProfile] || { totalTime: 0, totalWords: 0 };
             const tbody = document.getElementById('history-body');
-            tbody.innerHTML = '';
+            tbody.innerHTML = ''; // Clear table correctly every load
 
             // Update Lifetime Stats View
             document.getElementById('dash-total-words').innerText = pStats.totalWords.toLocaleString();
