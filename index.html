@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Computer Point | Official Typing Practice Portal</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -25,6 +25,11 @@
             --key-border: #475569;
             --key-depth: #0f172a;
             --border-color: #334155;
+            --grade-s: #a855f7; /* Purple */
+            --grade-a: #22c55e; /* Green */
+            --grade-b: #3b82f6; /* Blue */
+            --grade-c: #eab308; /* Yellow */
+            --grade-f: #ef4444; /* Red */
         }
 
         * {
@@ -46,9 +51,15 @@
 
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
 
         .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .shake-anim { animation: shake 0.3s ease-in-out; }
 
         /* Navigation */
         nav {
@@ -60,7 +71,8 @@
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
+            transition: transform 0.3s ease;
         }
 
         .logo {
@@ -73,7 +85,6 @@
             color: var(--text-main);
         }
 
-        /* Customizable Logo Image */
         .custom-logo {
             height: 35px;
             width: auto;
@@ -86,6 +97,7 @@
         .nav-links {
             display: flex;
             gap: 1.5rem;
+            align-items: center;
         }
 
         .nav-links a {
@@ -98,6 +110,17 @@
 
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
+        /* Toggle Switches */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-sec);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
         /* Main Container */
         .container {
             max-width: 1200px;
@@ -107,15 +130,11 @@
         }
 
         /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 2rem 0;
-            margin-bottom: 1rem;
-        }
-
+        .hero { text-align: center; padding: 2rem 0; margin-bottom: 1rem; }
         .hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; }
         .hero p { color: var(--text-sec); font-size: 1.1rem; max-width: 700px; margin: 0 auto 2rem; }
 
+        /* Buttons */
         .btn {
             background-color: var(--primary);
             color: white;
@@ -128,6 +147,7 @@
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             text-decoration: none;
         }
@@ -138,14 +158,11 @@
             box-shadow: 0 4px 12px var(--accent-glow);
         }
 
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-sec);
-        }
-
+        .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-sec); }
         .btn-outline:hover { background-color: var(--bg-panel); color: var(--text-main); border-color: var(--text-sec); }
         .btn-small { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .btn-print { background-color: var(--text-main); color: var(--bg-sec); }
+        .btn-print:hover { background-color: #e2e8f0; box-shadow: 0 4px 12px rgba(255,255,255,0.2); }
 
         /* Panels */
         .panel {
@@ -155,6 +172,7 @@
             border: 1px solid var(--border-color);
             margin-bottom: 2rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.3s;
         }
 
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;}
@@ -170,13 +188,14 @@
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
             gap: 1rem;
+            transition: opacity 0.3s;
         }
 
         .stat-box { display: flex; flex-direction: column; align-items: center; }
         .stat-label { font-size: 0.75rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
         .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: var(--accent); }
 
-        /* New Two-Box Typing Interface */
+        /* Typing Area */
         .target-box {
             background-color: var(--bg-sec);
             border-radius: 8px;
@@ -192,37 +211,14 @@
             border: 1px solid var(--border-color);
             margin-bottom: 1rem;
             box-shadow: inset 0 4px 6px rgba(0,0,0,0.2);
+            transition: all 0.3s;
         }
 
-        .target-box span {
-            padding: 2px 4px;
-            margin: 0 1px;
-            border-radius: 4px;
-            transition: all 0.15s;
-            display: inline-block;
-        }
-
-        .target-box span.active {
-            color: var(--text-main);
-            background-color: rgba(59, 130, 246, 0.25);
-            border-bottom: 3px solid var(--accent);
-        }
-
-        .target-box span.correct {
-            color: var(--correct);
-        }
-
-        .target-box span.incorrect {
-            color: var(--incorrect);
-            text-decoration: line-through;
-            background-color: rgba(239, 68, 68, 0.1);
-        }
-
-        .target-box span.error-highlight {
-            color: var(--incorrect);
-            background-color: rgba(239, 68, 68, 0.2);
-            border-bottom: 3px solid var(--incorrect);
-        }
+        .target-box span { padding: 2px 4px; margin: 0 1px; border-radius: 4px; transition: all 0.15s; display: inline-block; }
+        .target-box span.active { color: var(--text-main); background-color: rgba(59, 130, 246, 0.25); border-bottom: 3px solid var(--accent); }
+        .target-box span.correct { color: var(--correct); }
+        .target-box span.incorrect { color: var(--incorrect); text-decoration: line-through; background-color: rgba(239, 68, 68, 0.1); }
+        .target-box span.error-highlight { color: var(--incorrect); background-color: rgba(239, 68, 68, 0.2); border-bottom: 3px solid var(--incorrect); }
 
         .user-input-box {
             width: 100%;
@@ -234,36 +230,15 @@
             border: 2px solid var(--border-color);
             border-radius: 8px;
             outline: none;
-            transition: all 0.3s;
+            transition: all 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .user-input-box:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
+        .user-input-box:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .user-input-box.input-error { border-color: var(--incorrect); background-color: rgba(239, 68, 68, 0.05); color: var(--incorrect); }
 
-        .user-input-box.input-error {
-            border-color: var(--incorrect);
-            background-color: rgba(239, 68, 68, 0.05);
-            color: var(--incorrect);
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background-color: var(--bg-sec);
-            border-radius: 3px;
-            margin-top: 1.5rem;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: var(--accent);
-            width: 0%;
-            transition: width 0.2s ease;
-        }
+        .progress-container { width: 100%; height: 6px; background-color: var(--bg-sec); border-radius: 3px; margin-top: 1.5rem; overflow: hidden; }
+        .progress-bar { height: 100%; background-color: var(--accent); width: 0%; transition: width 0.2s ease; }
 
         /* Professional Mechanical Keyboard */
         .keyboard {
@@ -277,6 +252,7 @@
             overflow-x: auto;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
             border: 1px solid var(--border-color);
+            transition: opacity 0.3s, height 0.3s;
         }
 
         .keyboard-row { display: flex; justify-content: center; gap: 6px; }
@@ -301,59 +277,26 @@
             user-select: none;
         }
 
-        /* Tactile Bumps on F and J */
-        .key[data-code="KeyF"]::after, .key[data-code="KeyJ"]::after {
-            content: '';
-            position: absolute;
-            bottom: 8px;
-            width: 14px;
-            height: 2px;
-            background-color: var(--text-sec);
-            border-radius: 2px;
-        }
+        .key[data-code="KeyF"]::after, .key[data-code="KeyJ"]::after { content: ''; position: absolute; bottom: 8px; width: 14px; height: 2px; background-color: var(--text-sec); border-radius: 2px; }
+        .key.pressed { transform: translateY(3px); border-bottom: 1px solid var(--key-depth); background: var(--primary); color: white; box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 0 12px var(--accent-glow); border-color: var(--accent); }
 
-        .key.pressed {
-            transform: translateY(3px);
-            border-bottom: 1px solid var(--key-depth);
-            background: var(--primary);
-            color: white;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.3), 0 0 12px var(--accent-glow);
-            border-color: var(--accent);
-        }
-
-        /* Special Keys */
         .key.backspace { min-width: 85px; font-size: 0.75rem;}
         .key.tab { min-width: 65px; font-size: 0.75rem;}
         .key.caps { min-width: 80px; font-size: 0.75rem;}
         .key.enter { min-width: 95px; font-size: 0.75rem;}
-        .key.shift-l { min-width: 105px; font-size: 0.75rem;}
-        .key.shift-r { min-width: 105px; font-size: 0.75rem;}
+        .key.shift-l, .key.shift-r { min-width: 105px; font-size: 0.75rem;}
         .key.space { min-width: 320px; }
         .key.ctrl, .key.win, .key.alt { min-width: 55px; font-size: 0.75rem;}
 
         /* Controls */
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-        
         .control-group { display: flex; flex-direction: column; gap: 8px; }
         .control-group label { font-size: 0.85rem; color: var(--text-sec); font-weight: 500;}
-        
-        select, input[type="text"] {
-            background-color: var(--bg-sec);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.6rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            outline: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-        }
-
+        select, input[type="text"] { background-color: var(--bg-sec); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem; border-radius: 6px; font-size: 0.95rem; outline: none; font-family: 'Inter', sans-serif; font-weight: 500; }
         select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 5px var(--accent-glow);}
 
         /* Profile & Dashboard */
-        .profile-container { display: flex; align-items: center; gap: 10px; background-color: var(--bg-sec); padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color);}
-        
+        .profile-container { display: flex; align-items: center; gap: 10px; background-color: var(--bg-sec); padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap;}
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .dash-card { background-color: var(--bg-sec); padding: 1.5rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
         .dash-card h3 { font-size: 0.9rem; color: var(--text-sec); margin-bottom: 5px; font-weight: 500;}
@@ -363,33 +306,84 @@
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
         th { color: var(--text-sec); font-weight: 500; font-size: 0.9rem; }
         tr:hover { background-color: rgba(255, 255, 255, 0.02); }
+        .grade-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; }
+
+        /* Modal / Analytics */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-panel); width: 90%; max-width: 600px; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-header { text-align: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; }
+        .modal-header h2 { font-family: 'Poppins'; font-size: 1.8rem; margin-bottom: 5px; }
+        .modal-grade { font-size: 4rem; font-weight: 800; line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .modal-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+        .modal-stat { background: var(--bg-sec); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
+        .modal-actions { display: flex; gap: 1rem; justify-content: center; }
 
         /* Footer */
         footer { background-color: var(--bg-sec); padding: 2rem; text-align: center; border-top: 1px solid var(--border-color); margin-top: auto; }
         footer p { color: var(--text-sec); font-size: 0.9rem; margin-bottom: 5px; }
+
+        /* Zen Mode (Focus Mode) */
+        body.zen-mode nav { transform: translateY(-100%); }
+        body.zen-mode .stats-bar, body.zen-mode .keyboard, body.zen-mode .panel-header { opacity: 0; pointer-events: none; height: 0; padding: 0; overflow: hidden; margin: 0; }
+        body.zen-mode .target-box { font-size: 1.6rem; max-height: 250px; padding: 2rem; }
+        body.zen-mode .user-input-box { font-size: 1.8rem; padding: 1.5rem; }
+        body.zen-mode #practice { border: none; box-shadow: none; background: transparent; }
 
         /* Utility */
         .hidden { display: none !important; }
         .flex { display: flex; gap: 10px; align-items: center;}
         
         /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--accent);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 2000;
-            font-weight: 600;
-        }
+        .toast { position: fixed; bottom: 20px; right: 20px; background-color: var(--accent); color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; font-weight: 600; }
         .toast.error-toast { background-color: var(--incorrect); }
         .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* =========================================
+           PRINT / EXPORT STYLES (Black & White, Formal) 
+           ========================================= */
+        #print-section { display: none; }
+        
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            body > *:not(#print-section) { display: none !important; }
+            
+            #print-section {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 1cm 2cm;
+                font-family: 'Times New Roman', Times, serif;
+                background: white;
+            }
+
+            .print-header { border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 30px; text-align: center; }
+            .print-header h1 { font-size: 28pt; margin: 0; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;}
+            .print-header h2 { font-size: 16pt; margin: 5px 0 0 0; color: #333; font-weight: normal;}
+            
+            .print-details { display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 12pt; }
+            .print-details .col { width: 48%; }
+            .print-details p { margin: 8px 0; border-bottom: 1px dashed #ccc; padding-bottom: 4px; }
+            .print-details strong { display: inline-block; width: 140px; }
+
+            .print-main-stats { display: flex; justify-content: space-between; text-align: center; margin-bottom: 40px; border: 2px solid #000; padding: 20px; border-radius: 8px; }
+            .print-stat-box { flex: 1; border-right: 1px solid #ccc; }
+            .print-stat-box:last-child { border-right: none; }
+            .print-stat-box .lbl { display: block; font-size: 10pt; text-transform: uppercase; color: #555; }
+            .print-stat-box .val { display: block; font-size: 32pt; font-weight: bold; margin-top: 5px; }
+
+            .print-grade { text-align: center; margin-bottom: 40px; padding: 20px; background: #f9f9f9 !important; border: 1px solid #ddd; border-radius: 8px; -webkit-print-color-adjust: exact; }
+            .print-grade h3 { margin: 0 0 10px 0; font-size: 14pt; }
+            .print-grade .g-val { font-size: 48pt; font-weight: bold; margin: 0; line-height: 1; }
+            .print-grade .g-desc { font-size: 11pt; color: #666; margin-top: 10px; font-style: italic; }
+
+            .print-footer { margin-top: 80px; display: flex; justify-content: space-between; align-items: flex-end; }
+            .sign-line { width: 250px; border-top: 1px solid #000; text-align: center; padding-top: 5px; font-size: 11pt; }
+            
+            .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 100pt; color: rgba(0,0,0,0.03); z-index: -1; white-space: nowrap; pointer-events: none;}
+        }
     </style>
 </head>
 <body>
@@ -397,15 +391,19 @@
     <!-- Navigation -->
     <nav>
         <div class="logo">
-            <!-- Replace src with your custom logo link or local file -->
             <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CP" alt="Logo" class="custom-logo" id="brand-logo" onerror="this.style.display='none'">
             <div>THE COMPUTER <span>POINT</span></div>
         </div>
         <div class="nav-links">
-            <a href="#home" class="active">Home</a>
-            <a href="#practice">Practice Area</a>
-            <a href="#profiles">My Profiles</a>
-            <a href="#dashboard">Dashboard</a>
+            <label class="toggle-container">
+                <input type="checkbox" id="sound-toggle" onchange="toggleSound()">
+                🔊 Audio FX
+            </label>
+            <label class="toggle-container" style="margin-left: 15px;">
+                <input type="checkbox" id="zen-toggle" onchange="toggleZenMode()">
+                🧘‍♂️ Focus Mode
+            </label>
+            <a href="#dashboard" style="margin-left: 15px;">Dashboard</a>
         </div>
     </nav>
 
@@ -413,7 +411,7 @@
         <!-- Hero -->
         <section class="hero">
             <h1>Professional Typing Mastery</h1>
-            <p>Official Training Portal. Word-by-Word lock enabled: You can backspace within a word, but pressing space submits it. Focus on accuracy over speed.</p>
+            <p>V3.1 Official Training Portal. Focus on your accuracy rhythm. Word-by-Word lock enabled.</p>
         </section>
 
         <!-- Profiles Panel -->
@@ -576,8 +574,8 @@
                     <div class="key" data-code="KeyB">B</div>
                     <div class="key" data-code="KeyN">N</div>
                     <div class="key" data-code="KeyM">M</div>
-                    <div class="key" data-code="Comma"><br>,</div>
-                    <div class="key" data-code="Period">><br>.</div>
+                    <div class="key" data-code="Comma">&lt;<br>,</div>
+                    <div class="key" data-code="Period">&gt;<br>.</div>
                     <div class="key" data-code="Slash">?<br>/</div>
                     <div class="key shift-r" data-code="ShiftRight">Shift</div>
                 </div>
@@ -632,6 +630,8 @@
                             <th>WPM</th>
                             <th>Accuracy</th>
                             <th>Errors</th>
+                            <th>Grade</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="history-body">
@@ -643,10 +643,103 @@
 
     </div>
 
+    <!-- Analytics Post-Test Modal -->
+    <div class="modal-overlay" id="result-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Session Complete!</h2>
+                <p style="color: var(--text-sec);" id="modal-subtitle">Great job. Here is your official performance evaluation.</p>
+                
+                <div class="modal-grade" id="modal-grade-text">A+</div>
+                <div style="color: var(--text-sec); font-size: 0.9rem;" id="modal-grade-desc">Excellent speed and accuracy.</div>
+            </div>
+
+            <div class="modal-stats-grid">
+                <div class="modal-stat">
+                    <div style="font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase;">Final WPM</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent);" id="modal-wpm">0</div>
+                </div>
+                <div class="modal-stat">
+                    <div style="font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase;">Accuracy</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--text-main);" id="modal-acc">0%</div>
+                </div>
+                <div class="modal-stat">
+                    <div style="font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase;">Correct Words</div>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: var(--correct);" id="modal-correct">0</div>
+                </div>
+                <div class="modal-stat">
+                    <div style="font-size: 0.8rem; color: var(--text-sec); text-transform: uppercase;">Errors</div>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: var(--incorrect);" id="modal-errors">0</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">Close & View Dashboard</button>
+                <button class="btn btn-print" onclick="triggerLastPrint()">🖨️ Print Certificate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Template (Hidden entirely except when printing) -->
+    <div id="print-section">
+        <div class="watermark">OFFICIAL RESULT</div>
+        
+        <div class="print-header">
+            <h1>The Computer Point</h1>
+            <h2>Official Typing Evaluation Report</h2>
+        </div>
+
+        <div class="print-details">
+            <div class="col">
+                <p><strong>Candidate Name:</strong> <span id="print-name">John Doe</span></p>
+                <p><strong>Date & Time:</strong> <span id="print-date">10/24/2023, 10:00 AM</span></p>
+            </div>
+            <div class="col">
+                <p><strong>Examination Mode:</strong> <span id="print-mode">Exam Mode</span></p>
+                <p><strong>Evaluation System:</strong> V3.1 Standardized Metrics</p>
+            </div>
+        </div>
+
+        <div class="print-grade">
+            <h3>Final Assessment Grade</h3>
+            <div class="g-val" id="print-grade-val">A</div>
+            <div class="g-desc" id="print-grade-desc">Outstanding performance. Candidate demonstrates high proficiency.</div>
+        </div>
+
+        <div class="print-main-stats">
+            <div class="print-stat-box">
+                <span class="lbl">Gross Speed (WPM)</span>
+                <span class="val" id="print-wpm">0</span>
+            </div>
+            <div class="print-stat-box">
+                <span class="lbl">Net Accuracy</span>
+                <span class="val" id="print-acc">0%</span>
+            </div>
+            <div class="print-stat-box">
+                <span class="lbl">Words Typed</span>
+                <span class="val" id="print-words">0 / 0</span>
+            </div>
+            <div class="print-stat-box">
+                <span class="lbl">Errors Made</span>
+                <span class="val" id="print-errors">0</span>
+            </div>
+        </div>
+
+        <div style="font-size: 10pt; color: #444; margin-bottom: 40px;">
+            * This document is an auto-generated official assessment record from The Computer Point Training Portal. 
+            WPM is calculated using standard character-stroke algorithms. Grading is weighted by a combination of both raw speed and precision.
+        </div>
+
+        <div class="print-footer">
+            <div class="sign-line">Candidate Signature</div>
+            <div class="sign-line">Instructor / Examiner Signature</div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <p><strong>The Computer Point</strong> | Professional Typing Mastery Portal</p>
-        <p>100 Steps Training Guide System • Build Version 3.0.0 (Word-by-Word Edit Mode)</p>
+        <p>Build Version 3.1.0 (Includes Audio FX, Focus Mode, & PDF Export)</p>
         <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">Profiles stored locally. Use Export/Import to transfer data.</p>
     </footer>
 
@@ -654,13 +747,61 @@
     <div class="toast" id="toast">Message saved!</div>
 
     <script>
+        // --- AUDIO ENGINE (Web Audio API) ---
+        let audioCtx = null;
+        let isSoundEnabled = false;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function toggleSound() {
+            isSoundEnabled = document.getElementById('sound-toggle').checked;
+            if (isSoundEnabled) initAudio();
+        }
+
+        function playSound(type) {
+            if (!isSoundEnabled || !audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'finish') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime); // A4
+                osc.frequency.setValueAtTime(554.37, audioCtx.currentTime + 0.1); // C#5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2); // E5
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            }
+        }
+
         // --- DATA & PROFILE MANAGEMENT ---
         let appData = {
             profiles: ["Default Student"],
             activeProfile: "Default Student",
-            history: {
-                "Default Student": []
-            }
+            history: { "Default Student": [] }
         };
 
         function initData() {
@@ -677,9 +818,7 @@
             populateProfileSelect();
         }
 
-        function saveData() {
-            localStorage.setItem('tcp_app_data', JSON.stringify(appData));
-        }
+        function saveData() { localStorage.setItem('tcp_app_data', JSON.stringify(appData)); }
 
         function populateProfileSelect() {
             const select = document.getElementById('profile-select');
@@ -748,9 +887,7 @@
                     } else {
                         showToast("Invalid save file format.", true);
                     }
-                } catch (err) {
-                    showToast("Error parsing file.", true);
-                }
+                } catch (err) { showToast("Error parsing file.", true); }
             };
             reader.readAsText(file);
         }
@@ -758,14 +895,10 @@
         // --- CONTENT LIBRARY ---
         const sentenceLibrary = {
             easy: [
-                "the quick brown fox jumps.",
-                "asdf jkl; asdf jkl; a s d f j k l ;",
-                "all fall dad glad sad fad.",
-                "ask dad for a glass of water.",
-                "a bad fad had glad lad.",
-                "typing is fun and fast.",
-                "he is a good boy.",
-                "we are going to learn."
+                "the quick brown fox jumps.", "asdf jkl; asdf jkl; a s d f j k l ;",
+                "all fall dad glad sad fad.", "ask dad for a glass of water.",
+                "a bad fad had glad lad.", "typing is fun and fast.",
+                "he is a good boy.", "we are going to learn."
             ],
             medium: [
                 "Typing is a core physical skill in the modern workplace; mastering it allows you to process information at professional industry speeds.",
@@ -795,18 +928,17 @@
         // --- STATE VARIABLES ---
         let wordsArray = [];
         let currentWordIndex = 0;
-        
         let timer = 0;
         let timeRemaining = 60;
         let maxTime = 60;
         let timerInterval = null;
         let isTyping = false;
         
-        // Stats tracking
         let correctCharsCount = 0;
         let totalAttemptedWords = 0;
         let correctWordsCount = 0;
         let errors = 0;
+        let lastSessionData = null; // Store last test for printing
         
         // --- DOM ELEMENTS ---
         const inputField = document.getElementById('practice-text-input');
@@ -819,7 +951,7 @@
         const statWPM = document.getElementById('stat-wpm');
         const statAcc = document.getElementById('stat-acc');
         const statErrors = document.getElementById('stat-errors');
-        
+
         // --- INITIALIZATION ---
         window.onload = () => {
             initData();
@@ -828,17 +960,17 @@
         };
 
         function setupEventListeners() {
-            // Focus mechanics
             inputField.addEventListener('input', handleInput);
-            
-            // Standard Keyboard Glow Effects
             document.addEventListener('keydown', handleKeyDownVisuals);
             document.addEventListener('keyup', handleKeyUpVisuals);
-            
-            // Allow focus clicking on target box to redirect to input box
-            targetDisplay.addEventListener('click', () => {
-                inputField.focus();
-            });
+            targetDisplay.addEventListener('click', () => { inputField.focus(); });
+        }
+
+        function toggleZenMode() {
+            const isZen = document.getElementById('zen-toggle').checked;
+            if(isZen) document.body.classList.add('zen-mode');
+            else document.body.classList.remove('zen-mode');
+            inputField.focus();
         }
 
         // --- TYPING LOGIC ---
@@ -849,21 +981,19 @@
             if (mode === 'exam') {
                 fullText = sentenceLibrary.exam[0];
                 timeSelect.value = "60";
-                timeSelect.disabled = true; // Lock timer
+                timeSelect.disabled = true;
             } else {
                 timeSelect.disabled = false;
                 const pool = sentenceLibrary[mode];
                 let selected = [];
-                const sentenceCount = Math.floor(Math.random() * 2) + 3; // 3 or 4 sentences
+                const sentenceCount = Math.floor(Math.random() * 2) + 3;
                 for(let i=0; i<sentenceCount; i++) {
                     selected.push(pool[Math.floor(Math.random() * pool.length)]);
                 }
                 fullText = selected.join(" ");
             }
             
-            // Convert to array of words, removing double spaces just in case
             wordsArray = fullText.trim().split(/\s+/);
-            
             renderWords();
             resetTest();
         }
@@ -888,58 +1018,68 @@
 
             if (!targetWord || !wordSpan) return;
 
+            playSound('tap');
+
             // Spacebar detection (Word submission)
             if (val.endsWith(' ') || (e.data === ' ' && val.includes(' '))) {
                 const typedWord = val.trim();
                 
-                // Submit and Lock the word
                 if (typedWord === targetWord) {
                     wordSpan.className = 'correct';
-                    correctCharsCount += targetWord.length + 1; // Count word length + space
+                    correctCharsCount += targetWord.length + 1; 
                     correctWordsCount++;
                 } else {
                     wordSpan.className = 'incorrect';
                     errors++;
                     statErrors.innerText = errors;
+                    triggerErrorShake();
+                    playSound('error');
                 }
                 
                 totalAttemptedWords++;
                 currentWordIndex++;
-                inputField.value = ''; // Clear for next word
+                inputField.value = ''; 
                 inputField.classList.remove('input-error');
                 
-                // Move Active highlight to next word
                 if (currentWordIndex < wordsArray.length) {
                     const nextSpan = document.getElementById('word-' + currentWordIndex);
                     nextSpan.className = 'active';
-                    
-                    // Auto-scroll logic if word is out of view
                     nextSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
                     finishTest();
                 }
             } else {
-                // Real-time highlighting BEFORE pressing space
+                // Real-time highlight
                 if (targetWord.startsWith(val)) {
                     wordSpan.classList.remove('error-highlight');
                     inputField.classList.remove('input-error');
                 } else {
+                    if(!inputField.classList.contains('input-error')) {
+                        // First time making the mistake on this word
+                        triggerErrorShake();
+                        playSound('error');
+                    }
                     wordSpan.classList.add('error-highlight');
                     inputField.classList.add('input-error');
                 }
                 
-                // Auto-Finish edge case: the very last word without hitting space
+                // Auto-Finish edge case (last word)
                 if (currentWordIndex === wordsArray.length - 1 && val === targetWord) {
                      wordSpan.className = 'correct';
-                     correctCharsCount += targetWord.length; // No space after last word
+                     correctCharsCount += targetWord.length; 
                      correctWordsCount++;
                      totalAttemptedWords++;
                      currentWordIndex++;
                      finishTest();
                 }
             }
-            
             updateStats();
+        }
+
+        function triggerErrorShake() {
+            inputField.classList.remove('shake-anim');
+            void inputField.offsetWidth; // trigger reflow
+            inputField.classList.add('shake-anim');
         }
 
         // --- TIMERS & STATS ---
@@ -950,7 +1090,6 @@
             
             timerInterval = setInterval(() => {
                 timer++;
-                
                 if (maxTime > 0) {
                     timeRemaining--;
                     statTime.innerText = formatTime(timeRemaining);
@@ -965,22 +1104,14 @@
         function updateStats() {
             const timeInMins = timer / 60;
             let wpm = 0;
+            if (timeInMins > 0) wpm = Math.max(0, Math.round((correctCharsCount / 5) / timeInMins));
             
-            // Standard WPM = (Total correct characters / 5) / Time
-            if (timeInMins > 0) {
-                wpm = Math.max(0, Math.round((correctCharsCount / 5) / timeInMins));
-            }
-            
-            // Accuracy based on words completed
             let accuracy = 100;
-            if (totalAttemptedWords > 0) {
-                accuracy = Math.round((correctWordsCount / totalAttemptedWords) * 100);
-            }
+            if (totalAttemptedWords > 0) accuracy = Math.round((correctWordsCount / totalAttemptedWords) * 100);
 
             statWPM.innerText = wpm;
             statAcc.innerText = accuracy + "%";
             
-            // Progress Bar
             const progress = (currentWordIndex / wordsArray.length) * 100;
             progressBar.style.width = progress + "%";
         }
@@ -1009,7 +1140,6 @@
             progressBar.style.width = "0%";
             targetDisplay.scrollTop = 0;
             
-            // Reset text spans
             Array.from(targetDisplay.children).forEach((span, index) => {
                 span.className = '';
                 if(index === 0) span.classList.add('active');
@@ -1018,16 +1148,59 @@
             inputField.focus();
         }
 
+        function calculateGrade(wpm, acc) {
+            if (wpm >= 60 && acc >= 98) return { letter: 'S', desc: 'Master Level. Exceptional speed and near-perfect accuracy.', color: 'var(--grade-s)' };
+            if (wpm >= 45 && acc >= 95) return { letter: 'A', desc: 'Excellent Level. Highly proficient and job-ready.', color: 'var(--grade-a)' };
+            if (wpm >= 30 && acc >= 90) return { letter: 'B', desc: 'Good Level. Solid foundation, focus on increasing speed.', color: 'var(--grade-b)' };
+            if (wpm >= 20 && acc >= 85) return { letter: 'C', desc: 'Passable Level. Requires more practice for professional standards.', color: 'var(--grade-c)' };
+            return { letter: 'F', desc: 'Needs Improvement. Focus on accuracy before attempting to type faster.', color: 'var(--grade-f)' };
+        }
+
         function finishTest() {
             clearInterval(timerInterval);
             inputField.disabled = true;
+            playSound('finish');
             
             const finalWPM = parseInt(statWPM.innerText);
             const finalAcc = parseInt(statAcc.innerText);
             const mode = modeSelect.options[modeSelect.selectedIndex].text.split(' ')[0];
+            const gradeData = calculateGrade(finalWPM, finalAcc);
+
+            // Store for printing
+            lastSessionData = {
+                date: new Date().toLocaleString(),
+                mode: modeSelect.options[modeSelect.selectedIndex].text,
+                wpm: finalWPM,
+                acc: finalAcc,
+                wordsCorrect: correctWordsCount,
+                wordsAttempted: totalAttemptedWords,
+                errors: errors,
+                grade: gradeData
+            };
             
-            saveSession(finalWPM, finalAcc, mode, errors);
-            showToast(`Test Complete! WPM: ${finalWPM} | Accuracy: ${finalAcc}%`);
+            saveSession(finalWPM, finalAcc, mode, errors, gradeData.letter);
+            
+            // Populate Modal
+            document.getElementById('modal-grade-text').innerText = gradeData.letter;
+            document.getElementById('modal-grade-text').style.color = gradeData.color;
+            document.getElementById('modal-grade-desc').innerText = gradeData.desc;
+            document.getElementById('modal-wpm').innerText = finalWPM;
+            document.getElementById('modal-acc').innerText = finalAcc + "%";
+            document.getElementById('modal-correct').innerText = `${correctWordsCount} / ${totalAttemptedWords}`;
+            document.getElementById('modal-errors').innerText = errors;
+            
+            // Show Modal
+            document.getElementById('result-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('result-modal').classList.remove('active');
+            // Remove zen mode to view dashboard if it was on
+            if(document.body.classList.contains('zen-mode')) {
+                document.getElementById('zen-toggle').checked = false;
+                toggleZenMode();
+            }
+            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
         }
 
         function formatTime(seconds) {
@@ -1040,36 +1213,31 @@
         function handleKeyDownVisuals(e) {
             const code = e.code;
             const keyElement = document.querySelector(`.key[data-code="${code}"]`);
-            if(keyElement) {
-                keyElement.classList.add('pressed');
-            }
+            if(keyElement) keyElement.classList.add('pressed');
         }
 
         function handleKeyUpVisuals(e) {
             const code = e.code;
             const keyElement = document.querySelector(`.key[data-code="${code}"]`);
-            if(keyElement) {
-                keyElement.classList.remove('pressed');
-            }
+            if(keyElement) keyElement.classList.remove('pressed');
         }
 
-        // --- DASHBOARD SAVING ---
-        function saveSession(wpm, accuracy, mode, errorsCount) {
+        // --- SAVING & DASHBOARD ---
+        function saveSession(wpm, accuracy, mode, errorsCount, grade) {
             if(wpm <= 0) return; 
             
             const history = appData.history[appData.activeProfile];
-            const newRecord = {
+            history.unshift({
                 date: new Date().toLocaleDateString(),
                 timestamp: Date.now(),
                 wpm: wpm,
                 accuracy: accuracy,
                 mode: mode,
-                errors: errorsCount
-            };
+                errors: errorsCount,
+                grade: grade
+            });
             
-            history.unshift(newRecord); 
             if(history.length > 30) history.pop(); 
-            
             saveData();
             loadDashboard();
         }
@@ -1096,7 +1264,10 @@
                 if (rec.accuracy > bestAcc) bestAcc = rec.accuracy;
                 totalWpm += rec.wpm;
 
-                if(index < 5) { // Top 5 recent
+                if(index < 10) { 
+                    const gradeColors = { 'S':'#a855f7', 'A':'#22c55e', 'B':'#3b82f6', 'C':'#eab308', 'F':'#ef4444' };
+                    const gColor = gradeColors[rec.grade || 'C'];
+                    
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${rec.date}</td>
@@ -1104,17 +1275,60 @@
                         <td style="color:var(--accent); font-weight:bold;">${rec.wpm}</td>
                         <td>${rec.accuracy}%</td>
                         <td style="color:var(--incorrect);">${rec.errors}</td>
+                        <td><span class="grade-badge" style="background:${gColor}33; color:${gColor};">${rec.grade || '-'}</span></td>
+                        <td><button class="btn btn-outline btn-small" onclick="printHistoricalData(${index})" style="padding: 2px 8px; font-size: 0.75rem;">Print</button></td>
                     `;
                     tbody.appendChild(tr);
                 }
             });
 
             const avgWpm = Math.round(totalWpm / history.length);
-
             document.getElementById('dash-best-wpm').innerText = bestWpm;
             document.getElementById('dash-avg-wpm').innerText = avgWpm;
             document.getElementById('dash-best-acc').innerText = bestAcc + "%";
             document.getElementById('dash-sessions').innerText = history.length;
+        }
+
+        // --- EXPORT TO PRINT / PDF ---
+        function triggerLastPrint() {
+            if(!lastSessionData) {
+                showToast("No test completed yet to print.", true);
+                return;
+            }
+            executePrint(lastSessionData);
+        }
+
+        function printHistoricalData(index) {
+            const rec = appData.history[appData.activeProfile][index];
+            const gradeData = calculateGrade(rec.wpm, rec.accuracy);
+            const historicalData = {
+                date: new Date(rec.timestamp).toLocaleString(),
+                mode: rec.mode + " Mode",
+                wpm: rec.wpm,
+                acc: rec.accuracy,
+                wordsCorrect: "N/A", // Historical doesn't save raw word counts yet
+                wordsAttempted: "N/A",
+                errors: rec.errors,
+                grade: gradeData
+            };
+            executePrint(historicalData);
+        }
+
+        function executePrint(data) {
+            document.getElementById('print-name').innerText = appData.activeProfile;
+            document.getElementById('print-date').innerText = data.date;
+            document.getElementById('print-mode').innerText = data.mode;
+            
+            document.getElementById('print-wpm').innerText = data.wpm;
+            document.getElementById('print-acc').innerText = data.acc + "%";
+            document.getElementById('print-words').innerText = data.wordsAttempted !== "N/A" ? `${data.wordsCorrect} / ${data.wordsAttempted}` : "N/A";
+            document.getElementById('print-errors').innerText = data.errors;
+
+            document.getElementById('print-grade-val').innerText = data.grade.letter;
+            document.getElementById('print-grade-desc').innerText = data.grade.desc;
+
+            // Trigger browser print dialog
+            window.print();
         }
 
         // --- UI UTILS ---
@@ -1125,9 +1339,7 @@
             else toast.classList.remove('error-toast');
             
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
     </script>
 </body>
