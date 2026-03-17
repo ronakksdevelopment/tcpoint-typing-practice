@@ -137,7 +137,7 @@
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
         .control-group { display: flex; flex-direction: column; gap: 8px; }
         .control-group label { font-size: 0.85rem; color: var(--text-sec); font-weight: 500;}
-        select, input[type="text"] { background-color: var(--bg-sec); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem; border-radius: 6px; font-size: 0.95rem; outline: none; font-family: 'Inter', sans-serif; font-weight: 500; }
+        select, input[type="text"], input[type="number"] { background-color: var(--bg-sec); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem; border-radius: 6px; font-size: 0.95rem; outline: none; font-family: 'Inter', sans-serif; font-weight: 500; }
         select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 5px var(--accent-glow);}
 
         /* Profile & Dashboard */
@@ -163,10 +163,11 @@
         tr:hover { background-color: rgba(255, 255, 255, 0.02); }
         .grade-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; }
 
-        /* Modal / Analytics */
+        /* Modals (Custom Alerts/Prompts/Results) */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: var(--bg-panel); width: 90%; max-width: 600px; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center;}
+        
         .modal-header { margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; }
         .modal-header h2 { font-family: 'Poppins'; font-size: 1.8rem; margin-bottom: 5px; }
         .modal-grade { font-size: 4rem; font-weight: 800; line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
@@ -174,12 +175,16 @@
         .modal-stat { background: var(--bg-sec); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
         .modal-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
+        /* Custom inputs inside smaller modals */
+        .modal-content.small-modal { max-width: 400px; }
+        .modal-content.small-modal .modal-header { border-bottom: none; margin-bottom: 0.5rem; padding-bottom: 0; }
+        .modal-content.small-modal h2 { font-size: 1.4rem; }
+
         /* Footer */
         footer { background-color: var(--bg-sec); padding: 2rem; text-align: center; border-top: 1px solid var(--border-color); margin-top: auto; transition: opacity 0.3s; }
         footer p { color: var(--text-sec); font-size: 0.9rem; margin-bottom: 5px; }
 
         /* Zen Mode (Focus Mode) */
-        /* Keep Navigation exactly as it is, simply hide other panels smoothly */
         body.zen-mode .hero, body.zen-mode .stats-bar, body.zen-mode .keyboard, body.zen-mode .panel-header, body.zen-mode #dashboard, body.zen-mode #profiles, body.zen-mode #settings, body.zen-mode footer { 
             opacity: 0; 
             pointer-events: none; 
@@ -306,12 +311,14 @@
                 </div>
                 <div class="control-group">
                     <label>Time Limit</label>
-                    <select id="time-select" onchange="resetTest()">
+                    <select id="time-select" onchange="handleTimeSelection()">
                         <option value="0">No Limit (Practice)</option>
                         <option value="30">30 Seconds</option>
                         <option value="60" selected>1 Minute Test</option>
                         <option value="120">2 Minute Test</option>
                         <option value="300">5 Minute Endurance</option>
+                        <!-- Added Custom Option -->
+                        <option value="custom">Custom Time...</option>
                     </select>
                 </div>
             </div>
@@ -331,7 +338,6 @@
                     Live Typing Area
                 </div>
                 <div class="flex">
-                    <!-- onmousedown="event.preventDefault()" explicitly stops the button from stealing focus and triggering a blur/pause -->
                     <button class="btn btn-outline" onmousedown="event.preventDefault()" onclick="loadText()">New Text</button>
                     <button class="btn" onmousedown="event.preventDefault()" onclick="resetTest()">Restart</button>
                 </div>
@@ -558,9 +564,38 @@
             </div>
 
             <div class="modal-actions">
-                <button class="btn btn-outline" onclick="closeModal(false)">View Dashboard</button>
-                <button class="btn" onclick="closeModal(true)">Practice Again</button>
+                <button class="btn btn-outline" onclick="closeResultModal(false)">View Dashboard</button>
+                <button class="btn" onclick="closeResultModal(true)">Practice Again</button>
                 <button class="btn btn-print" onclick="triggerLastPrint()">🖨️ Print Certificate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Prompt Modal (replaces browser prompt) -->
+    <div class="modal-overlay" id="prompt-modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h2 id="prompt-title">Input Required</h2>
+                <p id="prompt-desc" style="color: var(--text-sec); margin-top: 5px;">Please enter value:</p>
+            </div>
+            <input type="text" id="prompt-input" class="user-input-box" style="font-size: 1.1rem; padding: 0.8rem; margin-bottom: 1.5rem; text-align: center;">
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closePromptModal()">Cancel</button>
+                <button class="btn" id="prompt-confirm-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal (replaces browser confirm) -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h2 id="confirm-title">Confirm Action</h2>
+                <p id="confirm-desc" style="color: var(--text-sec); margin-top: 5px;">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-actions" style="margin-top: 1.5rem;">
+                <button class="btn btn-outline" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirm-btn">Confirm</button>
             </div>
         </div>
     </div>
@@ -623,7 +658,6 @@
             stats: { "Default Student": { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} } }
         };
 
-        // Immediately invoked function to guarantee data is fetched instantly, avoiding load delays.
         (function initData() {
             const stored = localStorage.getItem('tcp_app_data');
             if (stored) {
@@ -631,7 +665,6 @@
                     const parsed = JSON.parse(stored);
                     appData = { ...appData, ...parsed };
                     
-                    // Deep Validation to fix any corrupted cache states
                     if (!appData.profiles || !Array.isArray(appData.profiles) || appData.profiles.length === 0) {
                         appData.profiles = ["Default Student"];
                         appData.activeProfile = "Default Student";
@@ -644,14 +677,12 @@
                         if(!appData.stats[p]) {
                             appData.stats[p] = { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} };
                         } else {
-                            // Catch legacy stats without new fields
                             if(typeof appData.stats[p].totalErrors === 'undefined') appData.stats[p].totalErrors = 0;
                             if(typeof appData.stats[p].perfectSessions === 'undefined') appData.stats[p].perfectSessions = 0;
                         }
                     });
                 } catch(e) { console.error("Data parse error, using defaults"); }
             } else {
-                // Rescue extremely old V2.0 data if present
                 const oldHistory = JSON.parse(localStorage.getItem('tcp_typing_history') || '[]');
                 if (oldHistory.length > 0) {
                     appData.history["Default Student"] = oldHistory;
@@ -662,6 +693,50 @@
 
         function saveData() { localStorage.setItem('tcp_app_data', JSON.stringify(appData)); }
 
+        // --- CUSTOM MODALS UI ---
+        let promptCallback = null;
+        function openPromptModal(title, desc, callback, inputType = "text") {
+            document.getElementById('prompt-title').innerText = title;
+            document.getElementById('prompt-desc').innerText = desc;
+            const input = document.getElementById('prompt-input');
+            input.type = inputType;
+            input.value = '';
+            promptCallback = callback;
+            document.getElementById('prompt-modal').classList.add('active');
+            input.focus();
+        }
+        function closePromptModal() {
+            document.getElementById('prompt-modal').classList.remove('active');
+            promptCallback = null;
+            if(!document.body.classList.contains('zen-mode')) inputField.focus();
+        }
+        document.getElementById('prompt-confirm-btn').onclick = () => {
+            const val = document.getElementById('prompt-input').value;
+            if (promptCallback) promptCallback(val);
+            closePromptModal();
+        };
+        document.getElementById('prompt-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') document.getElementById('prompt-confirm-btn').click();
+        });
+
+        let confirmCallback = null;
+        function openConfirmModal(title, desc, callback) {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-desc').innerText = desc;
+            confirmCallback = callback;
+            document.getElementById('confirm-modal').classList.add('active');
+        }
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.remove('active');
+            confirmCallback = null;
+            inputField.focus();
+        }
+        document.getElementById('confirm-btn').onclick = () => {
+            if (confirmCallback) confirmCallback();
+            closeConfirmModal();
+        };
+
+        // --- PROFILES & UI UPDATES ---
         function populateProfileSelect() {
             const select = document.getElementById('profile-select');
             select.innerHTML = '';
@@ -688,22 +763,23 @@
         }
 
         function createNewProfile() {
-            const name = prompt("Enter new student name:");
-            if (name && name.trim().length > 0) {
-                const cleanName = name.trim();
-                if (!appData.profiles.includes(cleanName)) {
-                    appData.profiles.push(cleanName);
-                    appData.history[cleanName] = [];
-                    appData.stats[cleanName] = { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} };
-                    appData.activeProfile = cleanName;
-                    saveData();
-                    populateProfileSelect();
-                    showToast("Profile created successfully!");
-                    resetTest();
-                } else {
-                    showToast("Profile already exists!", true);
+            openPromptModal("New Student Profile", "Enter student name:", (name) => {
+                if (name && name.trim().length > 0) {
+                    const cleanName = name.trim();
+                    if (!appData.profiles.includes(cleanName)) {
+                        appData.profiles.push(cleanName);
+                        appData.history[cleanName] = [];
+                        appData.stats[cleanName] = { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0, weakKeys: {} };
+                        appData.activeProfile = cleanName;
+                        saveData();
+                        populateProfileSelect();
+                        showToast("Profile created successfully!");
+                        resetTest();
+                    } else {
+                        showToast("Profile already exists!", true);
+                    }
                 }
-            }
+            });
         }
         
         function deleteProfile() {
@@ -711,16 +787,16 @@
                 showToast("Cannot delete the last remaining profile.", true);
                 return;
             }
-            if (confirm(`Are you sure you want to delete the profile '${appData.activeProfile}'? All history will be lost forever.`)) {
+            openConfirmModal("Delete Profile", `Are you sure you want to delete '${appData.activeProfile}'? All history will be permanently lost.`, () => {
                 appData.profiles = appData.profiles.filter(p => p !== appData.activeProfile);
                 delete appData.history[appData.activeProfile];
                 delete appData.stats[appData.activeProfile];
-                appData.activeProfile = appData.profiles[0]; // switch to first available
+                appData.activeProfile = appData.profiles[0];
                 saveData();
                 populateProfileSelect();
                 showToast("Profile deleted successfully.");
                 resetTest();
-            }
+            });
         }
 
         // --- Custom File Import (.txt) ---
@@ -734,7 +810,6 @@
                 
                 sentenceLibrary.custom = [text];
                 
-                const modeSelect = document.getElementById('mode-select');
                 let customOpt = Array.from(modeSelect.options).find(opt => opt.value === 'custom');
                 if (!customOpt) {
                     customOpt = document.createElement('option');
@@ -749,7 +824,33 @@
                 showToast("Practice notes successfully loaded!");
             };
             reader.readAsText(file);
-            event.target.value = ''; // Reset input to allow re-uploading the same file
+            event.target.value = '';
+        }
+
+        // --- TIME SELECTION WITH CUSTOM OPTION ---
+        function handleTimeSelection() {
+            if (timeSelect.value === 'custom') {
+                openPromptModal("Custom Timer", "Enter practice time in seconds (e.g., 45, 90, 600):", (val) => {
+                    const secs = parseInt(val);
+                    if (!isNaN(secs) && secs > 0) {
+                        let existingOpt = Array.from(timeSelect.options).find(o => o.value == secs);
+                        if (!existingOpt) {
+                            const newOpt = document.createElement('option');
+                            newOpt.value = secs;
+                            newOpt.innerText = `${secs} Seconds (Custom)`;
+                            timeSelect.insertBefore(newOpt, timeSelect.lastElementChild);
+                        }
+                        timeSelect.value = secs;
+                        resetTest();
+                    } else {
+                        showToast("Invalid time. Falling back to 1 Minute.", true);
+                        timeSelect.value = "60";
+                        resetTest();
+                    }
+                }, "number");
+            } else {
+                resetTest();
+            }
         }
 
         // --- CONTENT LIBRARY ---
@@ -815,7 +916,6 @@
 
         // --- INITIALIZATION ALIGNMENT ---
         window.onload = () => {
-            // Ensure default dropdown starts visibly loaded without blanking
             modeSelect.value = "easy"; 
             populateProfileSelect();
             loadText();
@@ -829,13 +929,15 @@
             
             // Smart Pause/Resume Logic
             inputField.addEventListener('blur', () => {
-                // If a test is actively running, pause it to save the user's timer
-                if (isTyping && !document.getElementById('result-modal').classList.contains('active')) {
-                    pauseTest();
+                // Ignore blur events if custom modals or result modals are open
+                if (document.getElementById('result-modal').classList.contains('active') ||
+                    document.getElementById('prompt-modal').classList.contains('active') ||
+                    document.getElementById('confirm-modal').classList.contains('active')) {
+                    return; 
                 }
+                if (isTyping) pauseTest();
             });
 
-            // Prevent spacebar page scrolling globally when NOT typing in an input
             window.addEventListener('keydown', function(e) {
                 if(e.code === 'Space' && e.target === document.body) {
                     e.preventDefault();
@@ -856,7 +958,7 @@
         function pauseTest() {
             if (!isTyping || isPaused) return;
             isPaused = true;
-            clearInterval(timerInterval); // Strict clear to prevent ghost timers
+            clearInterval(timerInterval);
             pauseOverlay.classList.add('active');
         }
 
@@ -868,7 +970,7 @@
             isPaused = false;
             pauseOverlay.classList.remove('active');
             inputField.focus();
-            clearInterval(timerInterval); // Double verify no stacking
+            clearInterval(timerInterval);
             timerInterval = setInterval(timerTick, 1000); 
         }
 
@@ -933,7 +1035,6 @@
 
             if (!targetWord || !wordSpan) return;
 
-            // Spacebar detection (Word submission)
             if (val.endsWith(' ') || (e.data === ' ' && val.includes(' '))) {
                 const typedWord = val.trim();
                 
@@ -958,19 +1059,16 @@
                     const nextSpan = document.getElementById('word-' + currentWordIndex);
                     nextSpan.className = 'active';
                     
-                    // Smooth auto-scroll logic
                     const boxRect = targetDisplay.getBoundingClientRect();
                     const spanRect = nextSpan.getBoundingClientRect();
                     if (spanRect.bottom > boxRect.bottom || spanRect.top < boxRect.top) {
                         nextSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 } else {
-                    // Update stats ONE last time before finalizing to capture absolute end score
                     updateStats(); 
                     finishTest();
                 }
             } else {
-                // Real-time highlight
                 if (targetWord.startsWith(val)) {
                     wordSpan.classList.remove('error-highlight');
                     inputField.classList.remove('input-error');
@@ -983,7 +1081,6 @@
                     inputField.classList.add('input-error');
                 }
                 
-                // Auto-Finish edge case (last word typed without a spacebar)
                 if (currentWordIndex === wordsArray.length - 1 && val === targetWord) {
                      wordSpan.className = 'correct';
                      correctCharsCount += targetWord.length; 
@@ -1005,7 +1102,7 @@
 
         // --- TIMERS & STATS ---
         function startTimer() {
-            clearInterval(timerInterval); // CRITICAL FIX: Kill any ghosts
+            clearInterval(timerInterval); 
             isTyping = true;
             isPaused = false;
             maxTime = parseInt(timeSelect.value);
@@ -1044,7 +1141,7 @@
         }
 
         function resetTest() {
-            clearInterval(timerInterval); // CRITICAL FIX
+            clearInterval(timerInterval);
             timer = 0;
             currentWordIndex = 0;
             correctCharsCount = 0;
@@ -1090,8 +1187,6 @@
             inputField.disabled = true;
             isTyping = false;
             
-            // CRITICAL FIX: Mathematically recalculate exactly what the final score should be
-            // to bypass the bug where WPM reads as 0 if the DOM hasn't flushed yet.
             const finalTimeInMins = timer > 0 ? timer / 60 : 1/60; 
             const calcWPM = Math.max(0, Math.round((correctCharsCount / 5) / finalTimeInMins));
             const calcAcc = totalAttemptedWords > 0 ? Math.round((correctWordsCount / totalAttemptedWords) * 100) : 0;
@@ -1099,14 +1194,12 @@
             const mode = modeSelect.options[modeSelect.selectedIndex].text.split(' ')[0];
             const gradeData = calculateGrade(calcWPM, calcAcc);
 
-            // Update Global Lifetime Stats
             let pStats = appData.stats[appData.activeProfile];
-            pStats.totalTime += (timer / 60); // in minutes
+            pStats.totalTime += (timer / 60);
             pStats.totalWords += correctWordsCount;
             pStats.totalErrors += errors;
             if (calcAcc === 100 && totalAttemptedWords > 0) pStats.perfectSessions += 1;
 
-            // Store for printing
             lastSessionData = {
                 date: new Date().toLocaleString(),
                 mode: modeSelect.options[modeSelect.selectedIndex].text,
@@ -1120,7 +1213,6 @@
             
             saveSession(calcWPM, calcAcc, mode, errors, gradeData.letter);
             
-            // Populate Modal
             document.getElementById('modal-grade-text').innerText = gradeData.letter;
             document.getElementById('modal-grade-text').style.color = gradeData.color;
             document.getElementById('modal-grade-desc').innerText = gradeData.desc;
@@ -1129,18 +1221,17 @@
             document.getElementById('modal-correct').innerText = `${correctWordsCount} / ${totalAttemptedWords}`;
             document.getElementById('modal-errors').innerText = errors;
             
-            // Show Modal
             document.getElementById('result-modal').classList.add('active');
         }
 
-        function closeModal(doReset = false) {
+        function closeResultModal(doReset = false) {
             document.getElementById('result-modal').classList.remove('active');
             if(document.body.classList.contains('zen-mode')) {
                 document.getElementById('zen-toggle').checked = false;
                 toggleZenMode();
             }
             if (doReset) {
-                loadText(); // Auto-generates a new test text & resets
+                loadText(); 
             } else {
                 document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
             }
@@ -1192,7 +1283,6 @@
                         let codeStr = k.getAttribute('data-code') || "";
                         let cleanCode = codeStr.replace('Key', '').replace('Digit', '').toLowerCase();
                         
-                        // Handle special symbols mapping based on our layout
                         if (codeStr === 'Comma') cleanCode = ',';
                         if (codeStr === 'Period') cleanCode = '.';
                         if (codeStr === 'Slash') cleanCode = '/';
@@ -1229,7 +1319,6 @@
 
         // --- SAVING & DASHBOARD ---
         function saveSession(wpm, accuracy, mode, errorsCount, grade) {
-            // CRITICAL FIX: Only return if they attempted NO words. 
             if(totalAttemptedWords === 0) return; 
             
             const history = appData.history[appData.activeProfile];
@@ -1252,9 +1341,8 @@
             const history = appData.history[appData.activeProfile] || [];
             const pStats = appData.stats[appData.activeProfile] || { totalTime: 0, totalWords: 0, totalErrors: 0, perfectSessions: 0 };
             const tbody = document.getElementById('history-body');
-            tbody.innerHTML = ''; // Clear table correctly every load
+            tbody.innerHTML = ''; 
 
-            // Update Lifetime Stats View (8 Perfectly Aligned Cards)
             document.getElementById('dash-total-words').innerText = pStats.totalWords.toLocaleString();
             document.getElementById('dash-total-errors').innerText = pStats.totalErrors.toLocaleString();
             document.getElementById('dash-perfect-sessions').innerText = pStats.perfectSessions.toLocaleString();
